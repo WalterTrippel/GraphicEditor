@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     canvas.cpp \
     canvasobserver.cpp \
     shapes/linesegment.cpp \
-    shapes/rectangle.cpp
+    shapes/rectangle.cpp \
+    shapes/edgerectangle.cpp
 
 HEADERS  += mainwindow.h \
     scene.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
     canvas.h \
     canvasobserver.h \
     shapes/linesegment.h \
-    shapes/rectangle.h
+    shapes/rectangle.h \
+    shapes/edgerectangle.h
 
 FORMS    += mainwindow.ui
 

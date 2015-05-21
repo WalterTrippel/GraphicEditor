@@ -1,7 +1,6 @@
 #ifndef ABSTRACTSHAPE_H
 #define ABSTRACTSHAPE_H
 
-
 #include <QGraphicsItem>
 #include <QPen>
 #include <QBrush>
@@ -21,6 +20,7 @@ public:
     virtual QRectF boundingRect() const = 0;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) = 0;
     virtual void draw(qreal x1, qreal y1, qreal x2, qreal y2) = 0;
+    virtual QGraphicsItem * currentEdge() const = 0;
 
     QPen pen() const;
     QBrush brush() const;

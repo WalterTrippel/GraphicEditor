@@ -11,10 +11,13 @@ Canvas::Canvas(QGraphicsView * parent) :
                     buttonPressed(false),
                     shapeSet(false),
                     shapeDrawn(true),
+                    enableResize(false),
+                    edgeLocker(false),
                     currentScene(new Scene),
                     currentPen(QPen())
 {
     setScene(currentScene);
+    setMouseTracking(true);
 }
 
 Canvas::~Canvas()
@@ -25,13 +28,13 @@ Canvas::~Canvas()
 
 void Canvas::addShape(AbstractShape *shape)
 {
-    if(!shapeDrawn)
+    /*if(!shapeDrawn)
     {
         AbstractShape * undrawnShape = currentShape();
         currentScene->removeItem(undrawnShape);
         delete undrawnShape;
         undrawnShape = nullptr;
-    }
+    }*/
 
     currentScene->addItem(shape);
     shapeDrawn = false;
@@ -161,40 +164,6 @@ void Canvas::notifyObservers()
     }
 }
 
-QPoint * Canvas::borderIntersection(int first_x, int first_y, int second_x, int second_y,
-                                    int third_x, int third_y, int fourth_x, int fourth_y) const
-{
-    int firstVector_x = 0, firstVector_y = 0, secondVector_x = 0, secondVector_y = 0;
-    firstVector_x = second_x - first_x;
-    firstVector_y = second_y - first_y;
-
-    secondVector_x = fourth_x - third_x;
-    secondVector_y = fourth_y - third_y;
-
-    float s = 0.0f, t = 0.0f;
-    s = (-firstVector_y * (first_x - third_x) + firstVector_x * (first_y - third_y)) /
-            (-secondVector_x * firstVector_y + firstVector_x * secondVector_y);
-    t = (secondVector_x * (first_y - third_y) + secondVector_y * (first_x - third_x)) /
-            (-secondVector_x * firstVector_y + firstVector_x * secondVector_y);
-
-    t = abs(t);
-    if(s >= 0 && s <= 1 && t >= 0 && t <= 1)
-    {
-        return new QPoint(first_x + (t * firstVector_x), first_y + (t * firstVector_y));
-    }
-    return nullptr;
-}
-
-qreal Canvas::angleVectors(int first_x, int first_y, int second_x, int second_y) const
-{
-    int tmp = first_x * second_x + first_y * second_y;
-    const int buff = sqrt(first_x * first_x + first_y * first_y) * sqrt(second_x * second_x + second_y * second_y);
-
-    tmp = tmp / buff;
-
-    return acos(tmp);
-}
-
 void Canvas::mousePressEvent(QMouseEvent *event)
 {
     if(event->buttons() & Qt::LeftButton)
@@ -208,6 +177,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 && point.x() < sceneRect().bottomRight().x()
                 && point.y() < sceneRect().bottomRight().y())
         {
+            enableResize = false;
             buttonPressed = true;
             if(shapeDrawn)
             {
@@ -219,10 +189,39 @@ void Canvas::mousePressEvent(QMouseEvent *event)
 
 void Canvas::mouseMoveEvent(QMouseEvent *event)
 {
+    if(enableResize)
+    {
+        QGraphicsItem * item = currentShape();
+        if(item != nullptr)
+        {
+            QPointF p = event->pos();
+            QRectF r = item->boundingRect();
+            QPointF tl = mapFromScene(r.topLeft());
+            QPointF br = mapFromScene(r.bottomRight());
+
+            if((p.x() <= tl.x() && p.x() > tl.x() - 3) ||
+                    (p.x() > br.x() - 3 && p.x() <= br.x()) &&
+                    p.y() > tl.y() - 3 && p.y() < br.y())
+            {
+                setCursor(Qt::SizeHorCursor);
+            }
+            else if((p.y() <= tl.y() && p.y() > tl.y() - 3) ||
+                    (p.y() > br.y() - 3 && p.y() <= br.y()) &&
+                    p.x() > tl.x() - 3 && p.x() < br.x())
+            {
+                setCursor(Qt::SizeVerCursor);
+            }
+            else
+            {
+                setCursor(Qt::CrossCursor);
+            }
+        }
+    }
+
+    QPointF point = mapToScene(event->pos());
+
     if(event->buttons() & Qt::LeftButton)
     {
-        QPointF point = mapToScene(event->pos());
-
         if(point.x() > sceneRect().topLeft().x()
                 && point.y() > sceneRect().topLeft().y()
                 && point.x() < sceneRect().bottomRight().x()
@@ -297,6 +296,7 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
             currentScene->currentShape()->setPen(currentPen);
             currentScene->currentShape()->draw(startX(), startY(), endX(), endY());
             currentScene->update();
+            edgeLocker = true;
         }
     }
 }
@@ -305,9 +305,18 @@ void Canvas::mouseReleaseEvent(QMouseEvent *)
 {
     if(buttonPressed)
     {
+
+        if(edgeLocker)
+        {
+            currentScene->currentEdge()->setPen(currentPen);
+            currentScene->currentEdge()->draw(startX(), startY(), endX(), endY());
+            currentScene->update();
+            edgeLocker = false;
+        }
+
         shapeDrawn = true;
         buttonPressed = false;
         shapeSet = false;
-
+        enableResize = true;
     }
 }

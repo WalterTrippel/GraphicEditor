@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QDebug>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -26,13 +28,13 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-#include <QDebug>
 
 void MainWindow::drawSameShapeType()
 {
     AbstractShape * lastDrawnShape = this->lastDrawnShape();
     if(lastDrawnShape)
     {
+        ((Canvas*)ui->tabWidget->currentWidget())->addShape((AbstractShape *)lastDrawnShape->currentEdge());
         ((Canvas*)ui->tabWidget->currentWidget())->addShape(lastDrawnShape);
     }
     lastDrawnShape = nullptr;
@@ -110,6 +112,8 @@ void MainWindow::buttonLineAction()
     if(ui->tabWidget->currentWidget())
     {
         lastDrawnShapeType = Line;
+
+        ((Canvas *)ui->tabWidget->currentWidget())->addShape((AbstractShape *)lastDrawnShape()->currentEdge());
         ((Canvas *)ui->tabWidget->currentWidget())->addShape(lastDrawnShape());
     }
 }
@@ -121,6 +125,8 @@ void MainWindow::buttonRectAction()
     if(ui->tabWidget->currentWidget())
     {
         lastDrawnShapeType = RectangleType;
+
+        ((Canvas *)ui->tabWidget->currentWidget())->addShape((AbstractShape *)lastDrawnShape()->currentEdge());
         ((Canvas *)ui->tabWidget->currentWidget())->addShape(lastDrawnShape());
     }
 }

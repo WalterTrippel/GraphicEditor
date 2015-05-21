@@ -2,7 +2,8 @@
 
 Rectangle::Rectangle(const QPen & pen, const QBrush & brush,
                      AbstractShape * parent): AbstractShape(pen, brush, parent),
-                                              self(new QGraphicsRectItem)
+                                              self(new QGraphicsRectItem),
+                                              edge(new EdgeRectangle)
 {
 }
 
@@ -10,11 +11,19 @@ Rectangle::~Rectangle()
 {
     delete self;
     self = nullptr;
+
+    delete edge;
+    edge = nullptr;
 }
 
 int Rectangle::type() const
 {
     return RectangleType::Type;
+}
+
+QGraphicsItem * Rectangle::currentEdge() const
+{
+    return this->edge;
 }
 
 QRectF Rectangle::boundingRect() const
@@ -32,7 +41,7 @@ void Rectangle::draw(qreal x1, qreal y1, qreal x2, qreal y2)
 
 void Rectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->drawRect(self->boundingRect());
+    //painter->drawRect(self->boundingRect());
     self->paint(painter, option, widget);
 }
 

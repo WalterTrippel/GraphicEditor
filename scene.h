@@ -3,6 +3,7 @@
 
 #include <QGraphicsScene>
 #include "abstractshape.h"
+#include "shapes/edgerectangle.h"
 
 class Scene : public QGraphicsScene
 {
@@ -12,6 +13,7 @@ public:
     explicit Scene(QObject * parent = nullptr);
     virtual ~Scene();
     AbstractShape * currentShape();
+    EdgeRectangle * currentEdge() const;
 };
 
 #endif // SCENE_H

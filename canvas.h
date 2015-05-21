@@ -40,10 +40,6 @@ public:
     void registerObserver(CanvasObserver * observer);
     void removeObserver(CanvasObserver * observer);
 
-    QPoint * borderIntersection(int first_x, int first_y, int second_x, int second_y,
-                            int third_x, int third_y, int fourth_x, int fourth_y) const;
-    qreal angleVectors(int first_x, int first_y, int second_x, int second_y) const;
-
 private:
     int _startX;
     int _startY;
@@ -52,6 +48,8 @@ private:
     bool buttonPressed;
     bool shapeSet;
     bool shapeDrawn;
+    bool enableResize;
+    bool edgeLocker;
     Scene * currentScene;
     QPen currentPen;
 
@@ -63,7 +61,6 @@ protected:
     void mousePressEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
-
 };
 
 #endif // CANVAS_H
