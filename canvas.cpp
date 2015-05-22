@@ -13,11 +13,13 @@ Canvas::Canvas(QGraphicsView * parent) :
                     shapeDrawn(true),
                     enableResize(false),
                     edgeLocker(false),
+                    resizeTranslate(0),
                     currentScene(new Scene),
                     currentPen(QPen())
 {
     setScene(currentScene);
     setMouseTracking(true);
+    _direction = None;
 }
 
 Canvas::~Canvas()
@@ -164,6 +166,27 @@ void Canvas::notifyObservers()
     }
 }
 
+bool Canvas::sceneLocker(QPointF point)
+{
+    if(point.x() < sceneRect().topLeft().x() + sceneError)
+    {
+        return false;
+    }
+    else if(point.y() < sceneRect().topLeft().y() + sceneError)
+    {
+        return false;
+    }
+    else if(point.x() > sceneRect().bottomRight().x() - sceneError)
+    {
+        return false;
+    }
+    else if(point.y() > sceneRect().bottomLeft().y() - sceneError)
+    {
+        return false;
+    }
+    return true;
+}
+
 void Canvas::mousePressEvent(QMouseEvent *event)
 {
     if(event->buttons() & Qt::LeftButton)
@@ -172,16 +195,60 @@ void Canvas::mousePressEvent(QMouseEvent *event)
         _startX = point.x();
         _startY = point.y();
 
-        if(point.x() > sceneRect().topLeft().x()
-                && point.y() > sceneRect().topLeft().y()
-                && point.x() < sceneRect().bottomRight().x()
-                && point.y() < sceneRect().bottomRight().y())
+        QGraphicsItem * item = currentShape();
+        QPointF p = event->pos();
+        QRectF r = item->boundingRect();
+        QPointF tl = mapFromScene(r.topLeft());
+        QPointF br = mapFromScene(r.bottomRight());
+
+        if((p.x() <= tl.x() && p.x() > tl.x() - 3) &&
+                p.y() > tl.y() - 3 && p.y() < br.y())
         {
-            enableResize = false;
-            buttonPressed = true;
-            if(shapeDrawn)
+            _direction = Left;
+            _startY = r.topLeft().y();
+            resizeTranslate = abs(event->pos().x()) - abs(startX());
+        }
+        else if((p.x() > br.x() - 3 && p.x() <= br.x()) &&
+                p.y() > tl.y() - 3 && p.y() < br.y())
+        {
+            _direction = Right;
+            _startX = r.topLeft().x();
+            _startY = r.topLeft().y();
+            _endY = r.bottomRight().y();
+            resizeTranslate = abs(event->pos().x() - abs(endX()));
+        }
+        else if((p.y() <= tl.y() && p.y() > tl.y() - 3) &&
+                p.x() > tl.x() - 3 && p.x() < br.x())
+        {
+            _direction = Top;
+            _startX = r.topLeft().x();
+            resizeTranslate = abs(event->pos().y()) - abs(startY());
+        }
+        else if((p.y() > br.y() - 3 && p.y() <= br.y()) &&
+                p.x() > tl.x() - 3 && p.x() < br.x())
+        {
+            _direction = Bottom;
+            _startX = r.topLeft().x();
+            _startY = r.topLeft().y();
+            _endX = r.bottomRight().x();
+            resizeTranslate = abs(event->pos().y() - abs(endY()));
+        }
+        else
+        {
+            _direction = None;
+            if(point.x() > sceneRect().topLeft().x()
+                    && point.y() > sceneRect().topLeft().y()
+                    && point.x() < sceneRect().bottomRight().x()
+                    && point.y() < sceneRect().bottomRight().y())
             {
-                notifyObservers();
+                enableResize = false;
+                buttonPressed = true;
+                if(shapeDrawn)
+                {
+                    currentScene->currentEdge()->hide();
+                    currentScene->update();
+                    notifyObservers();
+                }
             }
         }
     }
@@ -191,7 +258,8 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
 {
     if(enableResize)
     {
-        QGraphicsItem * item = currentShape();
+        AbstractShape * item = currentShape();
+        AbstractShape * edge = currentScene->currentEdge();
         if(item != nullptr)
         {
             QPointF p = event->pos();
@@ -215,12 +283,102 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
             {
                 setCursor(Qt::CrossCursor);
             }
+
+            if(event->buttons() & Qt::LeftButton)
+            {
+                switch(_direction)
+                {
+                case Left :
+                {
+                    QPointF point = mapToScene(event->pos());
+                    if(sceneLocker(point))
+                    {
+                        point = event->pos();
+                        if(abs(point.x()) - abs(startX()) >= resizeTranslate)
+                        {
+                            _startX += sceneError;
+                        }
+                        else
+                        {
+                            _startX -= sceneError;
+                        }
+                        item->draw(startX(), startY(), endX(), endY());
+                        edge->draw(startX(), startY(), endX(), endY());
+                        currentScene->update();
+                    }
+                    break;
+                }
+
+                case Right :
+                {
+                    QPointF point = mapToScene(event->pos());
+                    if(sceneLocker(point))
+                    {
+                        point = event->pos();
+                        if(abs(point.x()) - abs(endX()) >= resizeTranslate)
+                        {
+                            _endX += sceneError;
+                        }
+                        else
+                        {
+                            _endX -= sceneError;
+                        }
+                        item->draw(startX(), startY(), endX(), endY());
+                        edge->draw(startX(), startY(), endX(), endY());
+                        currentScene->update();
+                    }
+                    break;
+                }
+
+                case Top:
+                {
+                    QPointF point = mapToScene(event->pos());
+                    if(sceneLocker(point))
+                    {
+                        point = event->pos();
+                        if(abs(point.y()) - abs(startY()) >= resizeTranslate)
+                        {
+                            _startY += sceneError;
+                        }
+                        else
+                        {
+                            _startY -= sceneError;
+                        }
+                        item->draw(startX(), startY(), endX(), endY());
+                        edge->draw(startX(), startY(), endX(), endY());
+                        currentScene->update();
+                    }
+                    break;
+                }
+                case Bottom :
+                {
+                    QPointF point = mapToScene(event->pos());
+                    if(sceneLocker(point))
+                    {
+                        point = event->pos();
+                        if(abs(point.y()) - abs(endY()) >= resizeTranslate)
+                        {
+                            _endY += sceneError;
+                        }
+                        else
+                        {
+                            _endY -= sceneError;
+                        }
+                        item->draw(startX(), startY(), endX(), endY());
+                        edge->draw(startX(), startY(), endX(), endY());
+                        currentScene->update();
+                    }
+                    break;
+                }
+                }
+            }
         }
     }
 
+
     QPointF point = mapToScene(event->pos());
 
-    if(event->buttons() & Qt::LeftButton)
+    if(event->buttons() & Qt::LeftButton && _direction == None)
     {
         if(point.x() > sceneRect().topLeft().x()
                 && point.y() > sceneRect().topLeft().y()
@@ -305,6 +463,7 @@ void Canvas::mouseReleaseEvent(QMouseEvent *)
 {
     if(buttonPressed)
     {
+        _direction = None;
 
         if(edgeLocker)
         {

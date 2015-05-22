@@ -1,6 +1,8 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
+#define sceneError 3
+
 #include <QWidget>
 #include <QPainter>
 #include <QPaintEvent>
@@ -19,6 +21,8 @@ class Canvas : public QGraphicsView
 public:
     explicit Canvas(QGraphicsView * parent = 0);
     ~Canvas();
+
+    enum ResizeDirection {None, Left, Top, Right, Bottom};
 
     void addShape(AbstractShape * shape);
     //void addBackgroundShape(AbstractShape * backgroundShape);
@@ -39,8 +43,11 @@ public:
     QRectF drawRect() const;
     void registerObserver(CanvasObserver * observer);
     void removeObserver(CanvasObserver * observer);
+    bool sceneLocker(QPointF point);
 
 private:
+    ResizeDirection _direction;
+
     int _startX;
     int _startY;
     int _endX;
@@ -50,6 +57,7 @@ private:
     bool shapeDrawn;
     bool enableResize;
     bool edgeLocker;
+    qreal resizeTranslate;
     Scene * currentScene;
     QPen currentPen;
 
