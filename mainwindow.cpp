@@ -14,7 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
     buttonCheckStates.append(ui->bDrawLine);
     buttonCheckStates.append(ui->bDrawRectangle);
     buttonCheckStates.append(ui->bDrawEllipse);
-    buttonCheckStates.append(ui->bDrawText);
+    buttonCheckStates.append(ui->bTriangle);
+    buttonCheckStates.append(ui->bDrag);
 
     ui->tabWidget->removeTab(0);
     ui->tabWidget->removeTab(0);
@@ -42,6 +43,7 @@ void MainWindow::drawSameShapeType()
 
 void MainWindow::checkSwitcher(QPushButton * button)
 {
+    //((Canvas *)ui->tabWidget->currentWidget())->removeCurrentEdge();
     for(auto &i : buttonCheckStates)
     {
         if(button != i && i->isChecked())
@@ -126,7 +128,7 @@ void MainWindow::buttonRectAction()
     {
         lastDrawnShapeType = RectangleType;
 
-        ((Canvas *)ui->tabWidget->currentWidget())->addShape((AbstractShape *)lastDrawnShape()->currentEdge());
+        //((Canvas *)ui->tabWidget->currentWidget())->addShape((AbstractShape *)lastDrawnShape()->currentEdge());
         ((Canvas *)ui->tabWidget->currentWidget())->addShape(lastDrawnShape());
     }
 }

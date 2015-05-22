@@ -44,6 +44,7 @@ public:
     void registerObserver(CanvasObserver * observer);
     void removeObserver(CanvasObserver * observer);
     bool sceneLocker(QPointF point);
+    void removeCurrentEdge();
 
 private:
     ResizeDirection _direction;

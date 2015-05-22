@@ -70,12 +70,6 @@
     <addaction name="actionCloseTab"/>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuHelp">
-    <property name="title">
-     <string>Help</string>
-    </property>
-    <addaction name="actionAbout_Qt"/>
-   </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
      <string>&amp;View</string>
@@ -85,10 +79,12 @@
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
-   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="drawingTools">
+   <property name="cursor">
+    <cursorShape>ArrowCursor</cursorShape>
+   </property>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Drawing Tools&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
@@ -109,6 +105,13 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="bDrag">
+       <property name="text">
+        <string>Drag</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QPushButton" name="bDrawLine">
        <property name="toolTip">
@@ -149,12 +152,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="bDrawText">
+      <widget class="QPushButton" name="bTriangle">
        <property name="text">
-        <string>Text</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
+        <string>Triangle</string>
        </property>
       </widget>
      </item>
