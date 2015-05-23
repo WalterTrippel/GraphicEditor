@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->bDrawEllipse, SIGNAL(released()), this, SLOT(buttonEllipseAction()));
     connect(ui->bPenWidth, SIGNAL(released()), this, SLOT(buttonPenWidthAction()));
     connect(ui->bTriangle, SIGNAL(released()), this, SLOT(buttonTriangleAction()));
+    connect(ui->bFill, SIGNAL(released()), this, SLOT(buttonFill()));
 }
 
 MainWindow::~MainWindow()
@@ -162,6 +163,21 @@ void MainWindow::buttonTriangleAction()
         lastDrawnShapeType = TriangleType;
 
         ((Canvas*)ui->tabWidget->currentWidget())->addShape(lastDrawnShape());
+    }
+}
+
+void MainWindow::buttonFill()
+{
+    if(ui->tabWidget->currentWidget())
+    {
+        if(((Canvas*)ui->tabWidget->currentWidget())->isFill())
+        {
+            ((Canvas*)ui->tabWidget->currentWidget())->setFill(false);
+        }
+        else
+        {
+            ((Canvas*)ui->tabWidget->currentWidget())->setFill(true);
+        }
     }
 }
 

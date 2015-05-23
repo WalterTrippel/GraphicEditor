@@ -612,84 +612,96 @@ void Canvas::mousePressEvent(QMouseEvent *event)
 {
     if(event->buttons() & Qt::LeftButton)
     {
-        QPointF point = mapToScene(event->pos());
-        _startX = point.x();
-        _startY = point.y();
-
-        QGraphicsItem * item = currentShape();
-        QPointF p = event->pos();
-        QRectF r = item->boundingRect();
-
-        QPointF tl = mapFromScene(r.topLeft());
-        QPointF br = mapFromScene(r.bottomRight());
-        QPointF tr = mapFromScene(r.topRight());
-        QPointF bl = mapFromScene(r.bottomLeft());
-
-        checkIfProperRect(tl, br, tr, bl);
-
-        if(belongToFirstCorners(p, tl, br))
+        if(enableFill)
         {
-            _direction = None;
-            _normalize = NormalizeLeft;
-        }
-        else if(belongToSecondCorners(p, tl, br))
-        {
-            _direction = None;
-            _normalize = NormalizeRight;
-        }
-        else if((p.x() <= tl.x() && p.x() > tl.x() - 3) &&
-                p.y() > tl.y() - 3 && p.y() < br.y())
-        {
-            _direction = Left;
-            _startY = r.topLeft().y();
-        }
-        else if((p.x() > br.x() - 3 && p.x() <= br.x()) &&
-                p.y() > tl.y() - 3 && p.y() < br.y())
-        {
-            _direction = Right;
-            _startX = r.topLeft().x();
-            _startY = r.topLeft().y();
-            _endY = r.bottomRight().y();
-        }
-        else if((p.y() <= tl.y() && p.y() > tl.y() - 3) &&
-                p.x() > tl.x() - 3 && p.x() < br.x())
-        {
-            _direction = Top;
-            _startX = r.topLeft().x();
-        }
-        else if((p.y() > br.y() - 3 && p.y() <= br.y()) &&
-                p.x() > tl.x() - 3 && p.x() < br.x())
-        {
-            _direction = Bottom;
-            _startX = r.topLeft().x();
-            _startY = r.topLeft().y();
-            _endX = r.bottomRight().x();
-        }
-        else if(p.x() >= tl.x() && p.x() <= br.x()
-                && p.y() >= tl.y() && p.y() <= br.y())
-        {
-            _direction = None;
-            isMoved = true;
-            _startX = item->boundingRect().topLeft().x();
-            _startY = item->boundingRect().topLeft().y();
-            _endX = item->boundingRect().bottomRight().x();
-            _endY = item->boundingRect().bottomRight().y();
-            coordinatesIterationMove = event->pos();
+            AbstractShape * tmp = currentShape();
+            if(tmp->isUnderMouse())
+            {
+                tmp->setBrush(QBrush(color()));
+                currentScene->update();
+            }
         }
         else
         {
-            _direction = None;
+            QPointF point = mapToScene(event->pos());
+            _startX = point.x();
+            _startY = point.y();
 
-            if(point.x() > sceneRect().topLeft().x()
-                    && point.y() > sceneRect().topLeft().y()
-                    && point.x() < sceneRect().bottomRight().x()
-                    && point.y() < sceneRect().bottomRight().y())
+            QGraphicsItem * item = currentShape();
+            QPointF p = event->pos();
+            QRectF r = item->boundingRect();
+
+            QPointF tl = mapFromScene(r.topLeft());
+            QPointF br = mapFromScene(r.bottomRight());
+            QPointF tr = mapFromScene(r.topRight());
+            QPointF bl = mapFromScene(r.bottomLeft());
+
+            checkIfProperRect(tl, br, tr, bl);
+
+            if(belongToFirstCorners(p, tl, br))
             {
-                enableResize = false;
-                buttonPressed = true;
-                if(shapeDrawn)
+                _direction = None;
+                _normalize = NormalizeLeft;
+            }
+            else if(belongToSecondCorners(p, tl, br))
+            {
+                _direction = None;
+                _normalize = NormalizeRight;
+            }
+            else if((p.x() <= tl.x() && p.x() > tl.x() - 3) &&
+                    p.y() > tl.y() - 3 && p.y() < br.y())
+            {
+                _direction = Left;
+                _startY = r.topLeft().y();
+            }
+            else if((p.x() > br.x() - 3 && p.x() <= br.x()) &&
+                    p.y() > tl.y() - 3 && p.y() < br.y())
+            {
+                _direction = Right;
+                _startX = r.topLeft().x();
+                _startY = r.topLeft().y();
+                _endY = r.bottomRight().y();
+            }
+            else if((p.y() <= tl.y() && p.y() > tl.y() - 3) &&
+                    p.x() > tl.x() - 3 && p.x() < br.x())
+            {
+                _direction = Top;
+                _startX = r.topLeft().x();
+            }
+            else if((p.y() > br.y() - 3 && p.y() <= br.y()) &&
+                    p.x() > tl.x() - 3 && p.x() < br.x())
+            {
+                _direction = Bottom;
+                _startX = r.topLeft().x();
+                _startY = r.topLeft().y();
+                _endX = r.bottomRight().x();
+            }
+            else if(p.x() >= tl.x() && p.x() <= br.x()
+                    && p.y() >= tl.y() && p.y() <= br.y())
+            {
+                _direction = None;
+                isMoved = true;
+                _startX = item->boundingRect().topLeft().x();
+                _startY = item->boundingRect().topLeft().y();
+                _endX = item->boundingRect().bottomRight().x();
+                _endY = item->boundingRect().bottomRight().y();
+                coordinatesIterationMove = event->pos();
+            }
+            else
+            {
+                _direction = None;
+
+                if(point.x() > sceneRect().topLeft().x()
+                        && point.y() > sceneRect().topLeft().y()
+                        && point.x() < sceneRect().bottomRight().x()
+                        && point.y() < sceneRect().bottomRight().y())
                 {
-                    notifyObservers();
+                    enableResize = false;
+                    buttonPressed = true;
+                    if(shapeDrawn)
+                    {
+                        notifyObservers();
+                    }
                 }
             }
         }
@@ -698,186 +710,188 @@ void Canvas::mousePressEvent(QMouseEvent *event)
 
 void Canvas::mouseMoveEvent(QMouseEvent *event)
 {
-    if(!isMoved && !(event->buttons() & Qt::Key::Key_R))
+    if(!enableFill)
     {
-        AbstractShape * item = currentShape();
-        QPointF p = event->pos();
-        QRectF r = item->boundingRect();
-
-        QPointF tl = mapFromScene(r.topLeft());
-        QPointF br = mapFromScene(r.bottomRight());
-        QPointF tr = mapFromScene(r.topRight());
-        QPointF bl = mapFromScene(r.bottomLeft());
-
-        checkIfProperRect(tl, br, tr, bl);
-
-        if(enableResize && shapeDrawn)
+        if(!isMoved && !(event->buttons() & Qt::Key::Key_R))
         {
-            //checkIfProperRect(tl, br);
-            if(item != nullptr && item->type() != AbstractShape::AbstractType::Type + 1)
+            AbstractShape * item = currentShape();
+            QPointF p = event->pos();
+            QRectF r = item->boundingRect();
+
+            QPointF tl = mapFromScene(r.topLeft());
+            QPointF br = mapFromScene(r.bottomRight());
+            QPointF tr = mapFromScene(r.topRight());
+            QPointF bl = mapFromScene(r.bottomLeft());
+
+            checkIfProperRect(tl, br, tr, bl);
+
+            if(enableResize && shapeDrawn)
             {
-
-                if(belongToFirstCorners(p, tl, br))
-                {
-                    setCursor(Qt::SizeBDiagCursor);
-                }
-                else if(belongToSecondCorners(p, tl, br))
-                {
-                    setCursor(Qt::SizeFDiagCursor);
-                }
-                else if(((p.x() <= tl.x() && p.x() > tl.x() - 3) &&
-                    p.y() > tl.y() - 3 && p.y() < br.y()) ||
-                    ((p.x() > br.x() - 3 && p.x() <= br.x()) &&
-                    p.y() > tl.y() - 3 && p.y() < br.y()))
-                {
-                    setCursor(Qt::SizeHorCursor);
-                }
-                else if(((p.y() > br.y() - 3 && p.y() <= br.y()) &&
-                         p.x() > tl.x() - 3 && p.x() < br.x()) ||
-                        (p.y() <= tl.y() && p.y() > tl.y() - 3) &&
-                        p.x() > tl.x() - 3 && p.x() < br.x())
-                {
-                    setCursor(Qt::SizeVerCursor);
-                }
-                else if(p.x() >= tl.x() && p.x() <= br.x()
-                        && p.y() >= tl.y() && p.y() <= br.y())
-                {
-                    setCursor(Qt::SizeAllCursor);
-                }
-                else
-                {
-                    setCursor(Qt::CrossCursor);
-                }
-
-                if(event->buttons() & Qt::LeftButton)
+                //checkIfProperRect(tl, br);
+                if(item != nullptr && item->type() != AbstractShape::AbstractType::Type + 1)
                 {
 
-                    QPointF tl = mapFromScene(r.topLeft());
-                    QPointF br = mapFromScene(r.bottomRight());
-                    QPointF point = mapToScene(event->pos());
-                    switch(_direction)
+                    if(belongToFirstCorners(p, tl, br))
                     {
-                    case Left :
+                        setCursor(Qt::SizeBDiagCursor);
+                    }
+                    else if(belongToSecondCorners(p, tl, br))
                     {
-                        if(sceneLocker(point))
+                        setCursor(Qt::SizeFDiagCursor);
+                    }
+                    else if(((p.x() <= tl.x() && p.x() > tl.x() - 3) &&
+                        p.y() > tl.y() - 3 && p.y() < br.y()) ||
+                        ((p.x() > br.x() - 3 && p.x() <= br.x()) &&
+                        p.y() > tl.y() - 3 && p.y() < br.y()))
+                    {
+                        setCursor(Qt::SizeHorCursor);
+                    }
+                    else if(((p.y() > br.y() - 3 && p.y() <= br.y()) &&
+                             p.x() > tl.x() - 3 && p.x() < br.x()) ||
+                            (p.y() <= tl.y() && p.y() > tl.y() - 3) &&
+                            p.x() > tl.x() - 3 && p.x() < br.x())
+                    {
+                        setCursor(Qt::SizeVerCursor);
+                    }
+                    else if(p.x() >= tl.x() && p.x() <= br.x()
+                            && p.y() >= tl.y() && p.y() <= br.y())
+                    {
+                        setCursor(Qt::SizeAllCursor);
+                    }
+                    else
+                    {
+                        setCursor(Qt::CrossCursor);
+                    }
+
+                    if(event->buttons() & Qt::LeftButton)
+                    {
+
+                        QPointF tl = mapFromScene(r.topLeft());
+                        QPointF br = mapFromScene(r.bottomRight());
+                        QPointF point = mapToScene(event->pos());
+                        switch(_direction)
                         {
-                            if(tl.x() > br.x())
-                            {
-                                _endX = point.x();
-                            }
-                            else
-                            {
-                                _startX = point.x();
-                            }
-
-                            //_endX = point.x();
-                        }
-                        break;
-                    }
-
-                    case Right :
-                    {
-                        if(sceneLocker(point))
+                        case Left :
                         {
-                            if(tl.x() > br.x())
+                            if(sceneLocker(point))
                             {
-                                _startX = point.x();
-                            }
-                            else
-                            {
-                                 _endX = point.x();
-                            }
-                            //_endX = point.x();
-                        }
-                        break;
-                    }
+                                if(tl.x() > br.x())
+                                {
+                                    _endX = point.x();
+                                }
+                                else
+                                {
+                                    _startX = point.x();
+                                }
 
-                    case Top:
-                    {
-                        if(sceneLocker(point))
-                        {
-                            if(tl.y() > br.y())
-                            {
-                                _endY = point.y();
                             }
-                            else
-                            {
-                                _startY = point.y();
-                            }
+                            break;
                         }
-                        break;
-                    }
-                    case Bottom :
-                    {
-                        if(sceneLocker(point))
-                        {
-                            if(tl.y() > br.y())
-                            {
-                                _startY = point.y();
-                            }
-                            else
-                            {
-                                _endY = point.y();
-                            }
-                        }
-                        break;
-                    }
-                    }
-                    item->draw(startX(), startY(), endX(), endY());
-                    //edge->draw(startX(), startY(), endX(), endY());
-                    currentScene->update();
 
-                    switch(_normalize)
-                    {
-                    case NormalizeLeft:
-                    {
-                        item->normalize(point.x(), point.y(),
-                                        point.x() - rect().topLeft().x());
+                        case Right :
+                        {
+                            if(sceneLocker(point))
+                            {
+                                if(tl.x() > br.x())
+                                {
+                                    _startX = point.x();
+                                }
+                                else
+                                {
+                                     _endX = point.x();
+                                }
+                            }
+                            break;
+                        }
+
+                        case Top:
+                        {
+                            if(sceneLocker(point))
+                            {
+                                if(tl.y() > br.y())
+                                {
+                                    _endY = point.y();
+                                }
+                                else
+                                {
+                                    _startY = point.y();
+                                }
+                            }
+                            break;
+                        }
+                        case Bottom :
+                        {
+                            if(sceneLocker(point))
+                            {
+                                if(tl.y() > br.y())
+                                {
+                                    _startY = point.y();
+                                }
+                                else
+                                {
+                                    _endY = point.y();
+                                }
+                            }
+                            break;
+                        }
+                        }
+                        item->draw(startX(), startY(), endX(), endY());
+                        //edge->draw(startX(), startY(), endX(), endY());
                         currentScene->update();
-                        break;
-                    }
+
+                        switch(_normalize)
+                        {
+                        case NormalizeLeft:
+                        {
+                            item->normalize(point.x(), point.y(),
+                                            point.x() - rect().topLeft().x());
+                            currentScene->update();
+                            break;
+                        }
+                        }
                     }
                 }
             }
-        }
 
-        QPointF point = mapToScene(event->pos());
-        if(event->buttons() & Qt::LeftButton && _direction == None
-                && _normalize == NormalizeNone)
-        {
-            preventOverBoundingOnDraw(point);
-
-            if(shapeSet)
+            QPointF point = mapToScene(event->pos());
+            if(event->buttons() & Qt::LeftButton && _direction == None
+                    && _normalize == NormalizeNone)
             {
-                currentScene->currentShape()->setPen(currentPen);
-                currentScene->currentShape()->draw(startX(), startY(), endX(), endY());
-                currentScene->update();
-                edgeLocker = true;
+                preventOverBoundingOnDraw(point);
+
+                if(shapeSet)
+                {
+                    currentScene->currentShape()->setPen(currentPen);
+                    currentScene->currentShape()->draw(startX(), startY(), endX(), endY());
+                    currentScene->update();
+                    edgeLocker = true;
+                }
             }
         }
-    }
-    else if((event->buttons() & Qt::LeftButton) && isMoved
-            && currentScene->currentShape()->type()
-            != LineSegment::LineSegmentType::Type)
-    {
-        QRectF r = currentShape()->boundingRect();
-        QPoint tmp = QPoint(event->pos().x() -
-                            coordinatesIterationMove.x(),
-                            event->pos().y() -
-                            coordinatesIterationMove.y());
+        else if((event->buttons() & Qt::LeftButton) && isMoved
+                && currentScene->currentShape()->type()
+                != LineSegment::LineSegmentType::Type)
+        {
+            QRectF r = currentShape()->boundingRect();
+            QPoint tmp = QPoint(event->pos().x() -
+                                coordinatesIterationMove.x(),
+                                event->pos().y() -
+                                coordinatesIterationMove.y());
 
-        preventOverBoundingOnMove(r, tmp);
+            preventOverBoundingOnMove(r, tmp);
 
-        currentScene->currentShape()->setPen(currentPen);
-        currentScene->currentShape()->draw(startX(), startY(), endX(), endY());
-        currentScene->update();
-        coordinatesIterationMove = event->pos();
+            currentScene->currentShape()->setPen(currentPen);
+            currentScene->currentShape()->draw(startX(), startY(), endX(), endY());
+            currentScene->update();
+            coordinatesIterationMove = event->pos();
+        }
     }
 }
 
 void Canvas::mouseReleaseEvent(QMouseEvent *)
 {
     isMoved = false;
+    enableFill = false;
     if(buttonPressed)
     {
         _direction = None;

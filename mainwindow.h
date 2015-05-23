@@ -55,6 +55,8 @@ private slots:
     void buttonPenColorAction();
     void buttonPenWidthAction();
 
+    void buttonFill();
+
     //void closeTab();
     //void closeTab(int tabIndex);
 };
