@@ -1,20 +1,19 @@
-#ifndef RECTANGLE_H
-#define RECTANGLE_H
+#ifndef TRIANGLE_H
+#define TRIANGLE_H
 
 #include <QGraphicsItem>
 #include "../abstractshape.h"
 #include "edgerectangle.h"
 
-
-class Rectangle : public AbstractShape
+class Triangle : public AbstractShape
 {
-    QGraphicsRectItem * self;
+    QGraphicsPolygonItem * self;
     EdgeRectangle * edge;
 public:
-    enum RectangleType {Type = AbstractType::Type + 2};
-    explicit Rectangle(const QPen & pen = QPen(), const QBrush & brush = QBrush(),
-                       AbstractShape * parent = nullptr);
-    virtual ~Rectangle();
+    enum TriangleType {Type = AbstractType::Type + 4};
+    explicit Triangle(const QPen & pen = QPen(), const QBrush & brush = QBrush(),
+                      AbstractShape * parent = nullptr);
+    virtual ~Triangle();
     int type() const;
     QRectF boundingRect() const;
     virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
@@ -24,4 +23,4 @@ public:
     virtual void normalize(qreal x1, qreal y1, qreal width);
 };
 
-#endif // RECTANGLE_H
+#endif // TRIANGLE_H

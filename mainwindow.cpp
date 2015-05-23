@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent) :
     buttonCheckStates.append(ui->bDrawRectangle);
     buttonCheckStates.append(ui->bDrawEllipse);
     buttonCheckStates.append(ui->bTriangle);
-    buttonCheckStates.append(ui->bDrag);
 
     ui->tabWidget->removeTab(0);
     ui->tabWidget->removeTab(0);
@@ -23,6 +22,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->bPenColor, SIGNAL(released()), this, SLOT(buttonPenColorAction()));
     connect(ui->bDrawLine, SIGNAL(released()), this, SLOT(buttonLineAction()));
     connect(ui->bDrawRectangle, SIGNAL(released()), this, SLOT(buttonRectAction()));
+    connect(ui->bDrawEllipse, SIGNAL(released()), this, SLOT(buttonEllipseAction()));
+    connect(ui->bPenWidth, SIGNAL(released()), this, SLOT(buttonPenWidthAction()));
+    connect(ui->bTriangle, SIGNAL(released()), this, SLOT(buttonTriangleAction()));
 }
 
 MainWindow::~MainWindow()
@@ -35,7 +37,7 @@ void MainWindow::drawSameShapeType()
     AbstractShape * lastDrawnShape = this->lastDrawnShape();
     if(lastDrawnShape)
     {
-        ((Canvas*)ui->tabWidget->currentWidget())->addShape((AbstractShape *)lastDrawnShape->currentEdge());
+        //((Canvas*)ui->tabWidget->currentWidget())->addShape((AbstractShape *)lastDrawnShape->currentEdge());
         ((Canvas*)ui->tabWidget->currentWidget())->addShape(lastDrawnShape);
     }
     lastDrawnShape = nullptr;
@@ -64,6 +66,9 @@ AbstractShape * MainWindow::lastDrawnShape() const
         break;
     case RectangleType: return new Rectangle;
         break;
+    case EllipseType: return new Ellipse;
+        break;
+    case TriangleType: return new Triangle;
     default: return nullptr;
         break;
     }
@@ -76,7 +81,7 @@ void MainWindow::newImage()
 
     bool valideName;
 
-    QString imageName = QInputDialog::getText(this, tr("Enter Name"),
+    QString imageName = QInputDialog::getText(this, tr("Name"),
                                               tr("Image Name : "), QLineEdit::Normal,
                                               "", &valideName);
     if(valideName)
@@ -96,8 +101,8 @@ void MainWindow::newImage()
     }
 
     QPoint imageSize;
-    imageSize.setX(QInputDialog::getInt(this, tr("Enter width"), tr("Image width metrics in px")));
-    imageSize.setY(QInputDialog::getInt(this, tr("Enter height"), tr("Image height metrics in px")));
+    imageSize.setX(QInputDialog::getInt(this, tr("Width"), tr("Image width metrics in px")));
+    imageSize.setY(QInputDialog::getInt(this, tr("Height"), tr("Image height metrics in px")));
 
     if(imageSize.x() && imageSize.y())
     {
@@ -136,6 +141,30 @@ void MainWindow::buttonRectAction()
     }
 }
 
+void MainWindow::buttonEllipseAction()
+{
+    checkSwitcher(ui->bDrawEllipse);
+
+    if(ui->tabWidget->currentWidget())
+    {
+        lastDrawnShapeType = EllipseType;
+
+        ((Canvas *)ui->tabWidget->currentWidget())->addShape(lastDrawnShape());
+    }
+}
+
+void MainWindow::buttonTriangleAction()
+{
+    checkSwitcher(ui->bTriangle);
+
+    if(ui->tabWidget->currentWidget())
+    {
+        lastDrawnShapeType = TriangleType;
+
+        ((Canvas*)ui->tabWidget->currentWidget())->addShape(lastDrawnShape());
+    }
+}
+
 void MainWindow::buttonPenColorAction()
 {
     if(ui->tabWidget->currentWidget())
@@ -143,5 +172,14 @@ void MainWindow::buttonPenColorAction()
         QColor color(QColorDialog::getColor(((Canvas *)ui->tabWidget->currentWidget())->color()));
 
         ((Canvas *)ui->tabWidget->currentWidget())->setColor(color);
+    }
+}
+
+void MainWindow::buttonPenWidthAction()
+{
+    if(ui->tabWidget->currentWidget())
+    {
+        int width(QInputDialog::getInt(this, tr("Enter Pen Width"), tr("Pen Width, px")));
+        ((Canvas*)ui->tabWidget->currentWidget())->setWidth(width);
     }
 }

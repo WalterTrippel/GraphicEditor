@@ -1,19 +1,19 @@
-#ifndef LINESEGMENT_H
-#define LINESEGMENT_H
+#ifndef ELLIPSE_H
+#define ELLIPSE_H
 
-#include <QGraphicsLineItem>
+#include <QGraphicsEllipseItem>
 #include "../abstractshape.h"
 #include "edgerectangle.h"
 
-class LineSegment : public AbstractShape
+class Ellipse : public AbstractShape
 {
-    QGraphicsLineItem * self;
+    QGraphicsEllipseItem * self;
     EdgeRectangle * edge;
 public:
-    enum LineSegmentType {Type = AbstractType::Type + 1};
-    explicit LineSegment(const QPen &pen = QPen(), const QBrush & brush = QBrush(),
-                         AbstractShape * parent = nullptr);
-    virtual ~LineSegment();
+    enum EllipseType {Type = AbstractType::Type + 3};
+    explicit Ellipse(const QPen &pen = QPen(), const QBrush & brush = QBrush(),
+                     AbstractShape * parent = nullptr);
+    virtual ~Ellipse();
     int type() const;
     virtual QRectF boundingRect() const;
     virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
@@ -22,7 +22,6 @@ public:
 
     virtual QGraphicsItem * currentEdge() const;
     void normalize(qreal x1, qreal y1, qreal width);
-
 };
 
-#endif // LINESEGMENT_H
+#endif // ELLIPSE_H

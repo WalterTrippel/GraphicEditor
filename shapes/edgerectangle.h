@@ -18,6 +18,7 @@ public:
                        QWidget * widget);
     virtual void draw(qreal x1, qreal y1, qreal x2, qreal y2);
     virtual QGraphicsItem * currentEdge() const;
+    void normalize(qreal x1, qreal y1, qreal width);
 };
 
 #endif // EDGERECTANGLE_H

@@ -26,6 +26,10 @@ QRectF LineSegment::boundingRect() const
     return self->boundingRect();
 }
 
+void LineSegment::normalize(qreal x1, qreal y1, qreal width)
+{
+}
+
 QGraphicsItem * LineSegment::currentEdge() const
 {
     return this->edge;

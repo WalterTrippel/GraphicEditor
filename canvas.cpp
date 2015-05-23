@@ -16,17 +16,30 @@ Canvas::Canvas(QGraphicsView * parent) :
                     coordinatesIterationMove(0, 0),
                     isMoved(false),
                     currentScene(new Scene),
-                    currentPen(QPen())
+                    currentPen(QPen()),
+                    enableToRotate(false),
+                    enableFill(false)
 {
     setScene(currentScene);
     setMouseTracking(true);
     _direction = None;
+    _normalize = NormalizeNone;
 }
 
 Canvas::~Canvas()
 {
     delete currentScene;
     currentScene = nullptr;
+}
+
+bool Canvas::isFill() const
+{
+    return enableFill;
+}
+
+void Canvas::setFill(bool flag)
+{
+    enableFill = flag;
 }
 
 void Canvas::removeCurrentEdge()
@@ -571,6 +584,30 @@ void Canvas::preventOverBoundingOnMove(QRectF rect, QPointF increment)
     }
 }
 
+bool Canvas::belongToFirstCorners(QPointF p, QPointF tl, QPointF br)
+{
+    if((p.x() <= tl.x() && p.x() > tl.x() - 3 &&
+        p.y() <= tl.y() && p.y() > tl.y() - 3) ||
+        p.x() <= br.x() && p.x() > br.x() - 3 &&
+        p.y() <= br.y() && p.y() > br.y() - 3)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool Canvas::belongToSecondCorners(QPointF p, QPointF tl, QPointF br)
+{
+    if( p.x() <= br.x() && p.x() > br.x() - 3 &&
+        p.y() <= tl.y() && p.y() > tl.y() - 3 ||
+        p.x() <= tl.x() && p.x() > tl.x() - 3 &&
+        p.y() <= br.y() && p.y() > br.y() - 3)
+    {
+        return true;
+    }
+    return false;
+}
+
 void Canvas::mousePressEvent(QMouseEvent *event)
 {
     if(event->buttons() & Qt::LeftButton)
@@ -590,7 +627,17 @@ void Canvas::mousePressEvent(QMouseEvent *event)
 
         checkIfProperRect(tl, br, tr, bl);
 
-        if((p.x() <= tl.x() && p.x() > tl.x() - 3) &&
+        if(belongToFirstCorners(p, tl, br))
+        {
+            _direction = None;
+            _normalize = NormalizeLeft;
+        }
+        else if(belongToSecondCorners(p, tl, br))
+        {
+            _direction = None;
+            _normalize = NormalizeRight;
+        }
+        else if((p.x() <= tl.x() && p.x() > tl.x() - 3) &&
                 p.y() > tl.y() - 3 && p.y() < br.y())
         {
             _direction = Left;
@@ -651,7 +698,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
 
 void Canvas::mouseMoveEvent(QMouseEvent *event)
 {
-    if(!isMoved)
+    if(!isMoved && !(event->buttons() & Qt::Key::Key_R))
     {
         AbstractShape * item = currentShape();
         QPointF p = event->pos();
@@ -669,8 +716,16 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
             //checkIfProperRect(tl, br);
             if(item != nullptr && item->type() != AbstractShape::AbstractType::Type + 1)
             {
-                //qDebug() << "point " << br << "\t top left " << tl;
-                if(((p.x() <= tl.x() && p.x() > tl.x() - 3) &&
+
+                if(belongToFirstCorners(p, tl, br))
+                {
+                    setCursor(Qt::SizeBDiagCursor);
+                }
+                else if(belongToSecondCorners(p, tl, br))
+                {
+                    setCursor(Qt::SizeFDiagCursor);
+                }
+                else if(((p.x() <= tl.x() && p.x() > tl.x() - 3) &&
                     p.y() > tl.y() - 3 && p.y() < br.y()) ||
                     ((p.x() > br.x() - 3 && p.x() <= br.x()) &&
                     p.y() > tl.y() - 3 && p.y() < br.y()))
@@ -771,12 +826,24 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
                     item->draw(startX(), startY(), endX(), endY());
                     //edge->draw(startX(), startY(), endX(), endY());
                     currentScene->update();
+
+                    switch(_normalize)
+                    {
+                    case NormalizeLeft:
+                    {
+                        item->normalize(point.x(), point.y(),
+                                        point.x() - rect().topLeft().x());
+                        currentScene->update();
+                        break;
+                    }
+                    }
                 }
             }
         }
 
         QPointF point = mapToScene(event->pos());
-        if(event->buttons() & Qt::LeftButton && _direction == None)
+        if(event->buttons() & Qt::LeftButton && _direction == None
+                && _normalize == NormalizeNone)
         {
             preventOverBoundingOnDraw(point);
 
@@ -814,6 +881,7 @@ void Canvas::mouseReleaseEvent(QMouseEvent *)
     if(buttonPressed)
     {
         _direction = None;
+        _normalize = NormalizeNone;
 
         /*if(edgeLocker && currentShape()->type() != AbstractShape::AbstractType::Type + 1)
         {

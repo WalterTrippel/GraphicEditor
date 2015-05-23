@@ -18,6 +18,8 @@
 
 #include "shapes/linesegment.h"
 #include "shapes/rectangle.h"
+#include "shapes/ellipse.h"
+#include "shapes/triangle.h"
 
 namespace Ui {
 class MainWindow;
@@ -35,7 +37,7 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    enum Shapes {None, Line, RectangleType, Ellipse, Triangle, Text};
+    enum Shapes {None, Line, RectangleType, EllipseType, TriangleType, Text};
 
     Shapes lastDrawnShapeType;
     QList<QPushButton *> buttonCheckStates;
@@ -47,14 +49,14 @@ private slots:
     void newImage();
     void buttonLineAction();
     void buttonRectAction();
-
+    void buttonEllipseAction();
+    void buttonTriangleAction();
 
     void buttonPenColorAction();
-    //void buttonPenWidthAction();
+    void buttonPenWidthAction();
 
     //void closeTab();
     //void closeTab(int tabIndex);
-    //void buttonDrawRectangle
 };
 
 #endif // MAINWINDOW_H

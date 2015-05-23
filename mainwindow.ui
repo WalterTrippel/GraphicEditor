@@ -14,6 +14,12 @@
    <string>GraphicEditor</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="mouseTracking">
+    <bool>false</bool>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
@@ -106,9 +112,9 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QPushButton" name="bDrag">
+      <widget class="QPushButton" name="bFill">
        <property name="text">
-        <string>Drag</string>
+        <string>Fill</string>
        </property>
       </widget>
      </item>

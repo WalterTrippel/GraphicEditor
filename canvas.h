@@ -26,6 +26,8 @@ public:
 
     enum ResizeDirection {None, Left, Top, Right, Bottom};
 
+    enum NormalizeDirection {NormalizeNone, NormalizeLeft, NormalizeRight};
+
     void addShape(AbstractShape * shape);
     //void addBackgroundShape(AbstractShape * backgroundShape);
     void setSceneRect(qreal x, qreal y, qreal w, qreal h);
@@ -41,6 +43,8 @@ public:
     //pen width
     void setWidth(int width);
     int width() const;
+    bool isFill() const;
+    void setFill(bool flag);
     void clear();
     QRectF drawRect() const;
     void registerObserver(CanvasObserver * observer);
@@ -50,6 +54,7 @@ public:
 
 private:
     ResizeDirection _direction;
+    NormalizeDirection _normalize;
 
     int _startX;
     int _startY;
@@ -64,10 +69,15 @@ private:
     bool isMoved;
     Scene * currentScene;
     QPen currentPen;
+    bool enableToRotate;
+    bool enableFill;
 
     void checkIfProperRect(QPointF & tl, QPointF & br, QPointF & tr, QPointF & bl);
     void preventOverBoundingOnDraw(QPointF point);
     void preventOverBoundingOnMove(QRectF rect, QPointF increment);
+
+    bool belongToFirstCorners(QPointF point, QPointF tl, QPointF br);
+    bool belongToSecondCorners(QPointF point, QPointF tl, QPointF br);
 
     QList<CanvasObserver *> canvasObservers;
 

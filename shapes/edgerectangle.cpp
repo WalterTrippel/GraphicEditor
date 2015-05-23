@@ -32,6 +32,11 @@ void EdgeRectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     self->paint(painter, option, widget);
 }
 
+void EdgeRectangle::normalize(qreal x1, qreal y1, qreal width)
+{
+    draw(x1, y1, width, width);
+}
+
 void EdgeRectangle::draw(qreal x1, qreal y1, qreal x2, qreal y2)
 {
     QPen localpen = QPen(Qt::red, 2, Qt::DashLine);

@@ -22,6 +22,8 @@ public:
     virtual void draw(qreal x1, qreal y1, qreal x2, qreal y2) = 0;
     virtual QGraphicsItem * currentEdge() const = 0;
 
+    virtual void normalize(qreal x1, qreal y1, qreal width) = 0;
+
     //virtual int getWidth() const = 0;
     //virtual int getHeight() const = 0;
 
