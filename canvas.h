@@ -15,6 +15,7 @@
 #include "scene.h"
 #include "canvasobserver.h"
 #include "shapes/rectangle.h"
+#include "shapes/linesegment.h"
 
 class Canvas : public QGraphicsView
 {
@@ -65,6 +66,8 @@ private:
     QPen currentPen;
 
     void checkIfProperRect(QPointF & tl, QPointF & br, QPointF & tr, QPointF & bl);
+    void preventOverBoundingOnDraw(QPointF point);
+    void preventOverBoundingOnMove(QRectF rect, QPointF increment);
 
     QList<CanvasObserver *> canvasObservers;
 
