@@ -14,6 +14,7 @@
 #include "abstractshape.h"
 #include "scene.h"
 #include "canvasobserver.h"
+#include "shapes/rectangle.h"
 
 class Canvas : public QGraphicsView
 {
@@ -58,9 +59,12 @@ private:
     bool shapeDrawn;
     bool enableResize;
     bool edgeLocker;
-    qreal resizeTranslate;
+    QPoint coordinatesIterationMove;
+    bool isMoved;
     Scene * currentScene;
     QPen currentPen;
+
+    void checkIfProperRect(QPointF & tl, QPointF & br, QPointF & tr, QPointF & bl);
 
     QList<CanvasObserver *> canvasObservers;
 

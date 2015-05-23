@@ -13,7 +13,8 @@ Canvas::Canvas(QGraphicsView * parent) :
                     shapeDrawn(true),
                     enableResize(false),
                     edgeLocker(false),
-                    resizeTranslate(0),
+                    coordinatesIterationMove(0, 0),
+                    isMoved(false),
                     currentScene(new Scene),
                     currentPen(QPen())
 {
@@ -30,13 +31,13 @@ Canvas::~Canvas()
 
 void Canvas::removeCurrentEdge()
 {
-    EdgeRectangle * tmp = currentScene->currentEdge();
+    /*EdgeRectangle * tmp = currentScene->currentEdge();
     if(tmp)
     {
         delete tmp;
         currentScene->update();
         tmp = nullptr;
-    }
+    }*/
 }
 
 void Canvas::addShape(AbstractShape *shape)
@@ -198,6 +199,28 @@ bool Canvas::sceneLocker(QPointF point)
     return true;
 }
 
+void Canvas::checkIfProperRect(QPointF & tl, QPointF & br,
+                               QPointF & tr, QPointF & bl)
+{
+    if(tl.x() > br.x() || tl.y() > br.y())
+    {
+        if(tl.x() > br.x() && tl.y() <= br.y())
+        {
+            std::swap(tl, tr);
+            std::swap(br, bl);
+        }
+        else if(tl.y() > br.y() && tl.x() <= br.x())
+        {
+            std::swap(tl, bl);
+            std::swap(br, tr);
+        }
+        else if(tl.x() > br.x() && tl.y() >= br.y())
+        {
+            std::swap(tl, br);
+        }
+    }
+}
+
 void Canvas::mousePressEvent(QMouseEvent *event)
 {
     if(event->buttons() & Qt::LeftButton)
@@ -209,15 +232,19 @@ void Canvas::mousePressEvent(QMouseEvent *event)
         QGraphicsItem * item = currentShape();
         QPointF p = event->pos();
         QRectF r = item->boundingRect();
+
         QPointF tl = mapFromScene(r.topLeft());
         QPointF br = mapFromScene(r.bottomRight());
+        QPointF tr = mapFromScene(r.topRight());
+        QPointF bl = mapFromScene(r.bottomLeft());
+
+        checkIfProperRect(tl, br, tr, bl);
 
         if((p.x() <= tl.x() && p.x() > tl.x() - 3) &&
                 p.y() > tl.y() - 3 && p.y() < br.y())
         {
             _direction = Left;
             _startY = r.topLeft().y();
-            resizeTranslate = abs(event->pos().x()) - abs(startX());
         }
         else if((p.x() > br.x() - 3 && p.x() <= br.x()) &&
                 p.y() > tl.y() - 3 && p.y() < br.y())
@@ -226,14 +253,12 @@ void Canvas::mousePressEvent(QMouseEvent *event)
             _startX = r.topLeft().x();
             _startY = r.topLeft().y();
             _endY = r.bottomRight().y();
-            resizeTranslate = abs(event->pos().x() - abs(endX()));
         }
         else if((p.y() <= tl.y() && p.y() > tl.y() - 3) &&
                 p.x() > tl.x() - 3 && p.x() < br.x())
         {
             _direction = Top;
             _startX = r.topLeft().x();
-            resizeTranslate = abs(event->pos().y()) - abs(startY());
         }
         else if((p.y() > br.y() - 3 && p.y() <= br.y()) &&
                 p.x() > tl.x() - 3 && p.x() < br.x())
@@ -242,7 +267,12 @@ void Canvas::mousePressEvent(QMouseEvent *event)
             _startX = r.topLeft().x();
             _startY = r.topLeft().y();
             _endX = r.bottomRight().x();
-            resizeTranslate = abs(event->pos().y() - abs(endY()));
+        }
+        else if(p.x() >= tl.x() && p.x() <= br.x()
+                && p.y() >= tl.y() && p.y() <= br.y())
+        {
+            _direction = None;
+            isMoved = true;
         }
         else
         {
@@ -253,8 +283,6 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                     && point.x() < sceneRect().bottomRight().x()
                     && point.y() < sceneRect().bottomRight().y())
             {
-                currentScene->currentShape()->currentEdge()->hide();
-                currentScene->update();
                 enableResize = false;
                 buttonPressed = true;
                 if(shapeDrawn)
@@ -268,28 +296,41 @@ void Canvas::mousePressEvent(QMouseEvent *event)
 
 void Canvas::mouseMoveEvent(QMouseEvent *event)
 {
-    if(enableResize)
+    AbstractShape * item = currentShape();
+    QPointF p = event->pos();
+    QRectF r = item->boundingRect();
+
+    QPointF tl = mapFromScene(r.topLeft());
+    QPointF br = mapFromScene(r.bottomRight());
+    QPointF tr = mapFromScene(r.topRight());
+    QPointF bl = mapFromScene(r.bottomLeft());
+
+    checkIfProperRect(tl, br, tr, bl);
+
+    if(enableResize && shapeDrawn)
     {
-        AbstractShape * item = currentShape();
-        QGraphicsItem * edge = item->currentEdge();//= currentScene->currentEdge();
+        //checkIfProperRect(tl, br);
         if(item != nullptr && item->type() != AbstractShape::AbstractType::Type + 1)
         {
-            QPointF p = event->pos();
-            QRectF r = item->boundingRect();
-            QPointF tl = mapFromScene(r.topLeft());
-            QPointF br = mapFromScene(r.bottomRight());
-
-            if((p.x() <= tl.x() && p.x() > tl.x() - 3) ||
-                    (p.x() > br.x() - 3 && p.x() <= br.x()) &&
-                    p.y() > tl.y() - 3 && p.y() < br.y())
+            //qDebug() << "point " << br << "\t top left " << tl;
+            if(((p.x() <= tl.x() && p.x() > tl.x() - 3) &&
+                p.y() > tl.y() - 3 && p.y() < br.y()) ||
+                ((p.x() > br.x() - 3 && p.x() <= br.x()) &&
+                p.y() > tl.y() - 3 && p.y() < br.y()))
             {
                 setCursor(Qt::SizeHorCursor);
             }
-            else if((p.y() <= tl.y() && p.y() > tl.y() - 3) ||
-                    (p.y() > br.y() - 3 && p.y() <= br.y()) &&
+            else if(((p.y() > br.y() - 3 && p.y() <= br.y()) &&
+                     p.x() > tl.x() - 3 && p.x() < br.x()) ||
+                    (p.y() <= tl.y() && p.y() > tl.y() - 3) &&
                     p.x() > tl.x() - 3 && p.x() < br.x())
             {
                 setCursor(Qt::SizeVerCursor);
+            }
+            else if(p.x() >= tl.x() && p.x() <= br.x()
+                    && p.y() >= tl.y() && p.y() <= br.y())
+            {
+                setCursor(Qt::SizeAllCursor);
             }
             else
             {
@@ -298,6 +339,11 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
 
             if(event->buttons() & Qt::LeftButton)
             {
+
+                QPointF tl = mapFromScene(r.topLeft());
+                QPointF br = mapFromScene(r.bottomRight());
+                QPointF tr = mapFromScene(r.topRight());
+                QPointF bl = mapFromScene(r.bottomLeft());
                 QPointF point = mapToScene(event->pos());
                 switch(_direction)
                 {
@@ -305,7 +351,16 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
                 {
                     if(sceneLocker(point))
                     {
-                        _startX = point.x();
+                        if(tl.x() > br.x())
+                        {
+                            _endX = point.x();
+                        }
+                        else
+                        {
+                            _startX = point.x();
+                        }
+
+                        //_endX = point.x();
                     }
                     break;
                 }
@@ -314,7 +369,15 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
                 {
                     if(sceneLocker(point))
                     {
-                        _endX = point.x();
+                        if(tl.x() > br.x())
+                        {
+                            _startX = point.x();
+                        }
+                        else
+                        {
+                             _endX = point.x();
+                        }
+                        //_endX = point.x();
                     }
                     break;
                 }
@@ -323,7 +386,14 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
                 {
                     if(sceneLocker(point))
                     {
-                        _startY = point.y();
+                        if(tl.y() > br.y())
+                        {
+                            _endY = point.y();
+                        }
+                        else
+                        {
+                            _startY = point.y();
+                        }
                     }
                     break;
                 }
@@ -331,21 +401,27 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
                 {
                     if(sceneLocker(point))
                     {
-                        _endY = point.y();
+                        if(tl.y() > br.y())
+                        {
+                            _startY = point.y();
+                        }
+                        else
+                        {
+                            _endY = point.y();
+                        }
                     }
                     break;
                 }
                 }
                 item->draw(startX(), startY(), endX(), endY());
-                edge->draw(startX(), startY(), endX(), endY());
+                //edge->draw(startX(), startY(), endX(), endY());
                 currentScene->update();
             }
         }
     }
 
-
     QPointF point = mapToScene(event->pos());
-    if(event->buttons() & Qt::LeftButton && _direction == None)
+    if(event->buttons() & Qt::LeftButton && _direction == None && !isMoved)
     {
         if(point.x() > sceneRect().topLeft().x()
                 && point.y() > sceneRect().topLeft().y()
@@ -424,6 +500,22 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
             edgeLocker = true;
         }
     }
+    /*else if((event->buttons() & Qt::LeftButton) && isMoved)
+    {
+        QPoint tmp = QPoint(event->pos().x() -
+                            coordinatesIterationMove.x(),
+                            event->pos().y() -
+                            coordinatesIterationMove.y());
+        _startX += tmp.x();
+        _startY += tmp.y();
+        _endX += tmp.x();
+        _endY += tmp.y();
+        coordinatesIterationMove = event->pos();
+
+        currentScene->currentShape()->setPen(currentPen);
+        currentScene->currentShape()->draw(startX(), startY(), endX(), endY());
+        currentScene->update();
+    }*/
 }
 
 void Canvas::mouseReleaseEvent(QMouseEvent *)
@@ -432,14 +524,16 @@ void Canvas::mouseReleaseEvent(QMouseEvent *)
     {
         _direction = None;
 
-        if(edgeLocker && currentShape()->type() != AbstractShape::AbstractType::Type + 1)
+        /*if(edgeLocker && currentShape()->type() != AbstractShape::AbstractType::Type + 1)
         {
             currentScene->currentEdge()->setPen(currentPen);
             currentScene->currentEdge()->draw(startX(), startY(), endX(), endY());
+            currentScene->currentEdge()->show();
             currentScene->update();
             edgeLocker = false;
-        }
+        }*/
 
+        isMoved = false;
         shapeDrawn = true;
         buttonPressed = false;
         shapeSet = false;

@@ -43,7 +43,10 @@ void MainWindow::drawSameShapeType()
 
 void MainWindow::checkSwitcher(QPushButton * button)
 {
-    //((Canvas *)ui->tabWidget->currentWidget())->removeCurrentEdge();
+    if(lastDrawnShape())
+    {
+        ((Canvas *)ui->tabWidget->currentWidget())->removeCurrentEdge();
+    }
     for(auto &i : buttonCheckStates)
     {
         if(button != i && i->isChecked())
@@ -115,7 +118,7 @@ void MainWindow::buttonLineAction()
     {
         lastDrawnShapeType = Line;
 
-        ((Canvas *)ui->tabWidget->currentWidget())->addShape((AbstractShape *)lastDrawnShape()->currentEdge());
+        //((Canvas *)ui->tabWidget->currentWidget())->addShape((AbstractShape *)lastDrawnShape()->currentEdge());
         ((Canvas *)ui->tabWidget->currentWidget())->addShape(lastDrawnShape());
     }
 }
