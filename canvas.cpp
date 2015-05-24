@@ -899,10 +899,10 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
             preventOverBoundingOnMove(r, tmp);
             currentScene->currentShape()->setPen(currentPen);
             if(currentShape()->type() == Triangle::TriangleType::Type &&
-                    _normalize == NormalizeLeft)
+                    ((Triangle *)currentShape())->normalizeFlag)
             {
                 currentScene->currentShape()->normalize(startX(), startY(),
-                                   endX() - rect().topLeft().x());
+                                startX() - rect().topLeft().x());
             }
             else
             {
