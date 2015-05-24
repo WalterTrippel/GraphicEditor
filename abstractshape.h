@@ -5,6 +5,7 @@
 #include <QPen>
 #include <QBrush>
 #include <QPainter>
+#include <math.h>
 
 class AbstractShape : public QGraphicsItem
 {

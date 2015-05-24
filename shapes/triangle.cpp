@@ -47,6 +47,10 @@ void Triangle::draw(qreal x1, qreal y1, qreal x2, qreal y2)
 
 void Triangle::normalize(qreal x1, qreal y1, qreal width)
 {
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
+
     self->setPen(pen());
     self->setBrush(brush());
 

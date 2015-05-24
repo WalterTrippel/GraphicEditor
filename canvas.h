@@ -80,7 +80,11 @@ private:
     bool belongToFirstCorners(QPointF point, QPointF tl, QPointF br);
     bool belongToSecondCorners(QPointF point, QPointF tl, QPointF br);
 
+
     QList<CanvasObserver *> canvasObservers;
+    QList<QPoint> linesEnds;
+    QList<QPoint> linesStarts;
+    QList<int> linePointIndexes;
 
     void notifyObservers();
 

@@ -63,6 +63,15 @@ void Canvas::addShape(AbstractShape *shape)
         undrawnShape = nullptr;
     }*/
 
+    if(shape->type() == LineSegment::LineSegmentType::Type)
+    {
+        currentScene->lines.append((LineSegment *)shape);
+    }
+    else
+    {
+        currentScene->shapes.append(shape);
+    }
+
     currentScene->addItem(shape);
     shapeDrawn = false;
     shapeSet = true;
@@ -686,6 +695,31 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 _endX = item->boundingRect().bottomRight().x();
                 _endY = item->boundingRect().bottomRight().y();
                 coordinatesIterationMove = event->pos();
+                linesEnds.clear();
+                linesStarts.clear();
+                linePointIndexes.clear();
+                for(auto & i : currentScene->lines)
+                {
+                    if(i->boundingRect().intersects(currentShape()->boundingRect()))
+                    {
+                        QPointF tl = i->boundingRect().topLeft();
+                        QPointF br = i->boundingRect().bottomRight();
+                        if(currentShape()->boundingRect().contains(br) &&
+                                !currentShape()->boundingRect().contains(tl))
+                        {
+                            linesEnds.append(br.toPoint());
+                            linesStarts.append(tl.toPoint());
+                            linePointIndexes.append(currentScene->lines.indexOf(i));
+                        }
+                        else if(currentShape()->boundingRect().contains(tl) &&
+                                !currentShape()->boundingRect().contains(br))
+                        {
+                            linesEnds.append(tl.toPoint());
+                            linesStarts.append(br.toPoint());
+                            linePointIndexes.append(currentScene->lines.indexOf(i));
+                        }
+                    }
+                }
             }
             else
             {
@@ -908,6 +942,19 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
             {
                 currentScene->currentShape()->draw(startX(), startY(), endX(), endY());
             }
+
+            if(!linesEnds.isEmpty())
+            {
+                for(auto i: linePointIndexes)
+                {
+                    linesEnds[linePointIndexes.indexOf(i)] += tmp;
+                    currentScene->lines.at(i)->draw(linesStarts[linePointIndexes.indexOf(i)].x(),
+                            linesStarts[linePointIndexes.indexOf(i)].y(),
+                            linesEnds[linePointIndexes.indexOf(i)].x(),
+                            linesEnds[linePointIndexes.indexOf(i)].y());
+                }
+            }
+
             currentScene->edge()->hide();
             currentScene->update();
             coordinatesIterationMove = event->pos();
