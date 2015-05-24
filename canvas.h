@@ -91,6 +91,9 @@ private:
 
     void notifyObservers();
 
+signals:
+    void addItem(QString);
+
 protected:
     void mousePressEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);

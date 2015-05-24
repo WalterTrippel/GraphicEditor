@@ -93,6 +93,8 @@ void Canvas::addShape(AbstractShape *shape)
         undrawnShape = nullptr;
     }
 
+    emit addItem(shape->getName());
+
     if(shape->type() == LineSegment::LineSegmentType::Type)
     {
         currentScene->lines.append((LineSegment *)shape);

@@ -34,11 +34,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->rHideName, SIGNAL(clicked(bool)), this, SLOT(hideNames()));
     connect(ui->listWidget, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
 
+    connect(ui->listWidget, SIGNAL(addItem(QString)), this, SLOT(addedItem(QString)));
+    connect(ui->listWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(deleteItem(QModelIndex)));
 
 
-
-
-    connect(ui->listWidget, SIGNAL(itemAdded(bool)), this, SLOT(addItem(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -251,4 +250,14 @@ void MainWindow::hideNames()
 void MainWindow::itemClicked(QModelIndex index)
 {
     QMessageBox::information(this, "Hi", "Clicked " + index.data().toString());
+}
+
+void MainWindow::addedItem(QString name)
+{
+    ui->listWidget->addItem(name);
+}
+
+void MainWindow::deleteItem(QModelIndex index)
+{
+    ui->listWidget->removeItemWidget(ui->listWidget->itemFromIndex(index));
 }

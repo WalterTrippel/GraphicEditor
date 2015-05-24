@@ -63,6 +63,8 @@ private slots:
     void hideNames();
 
     void itemClicked(QModelIndex index);
+    void addedItem(QString name);
+    void deleteItem(QModelIndex index);
 
     //void closeTab();
     //void closeTab(int tabIndex);
