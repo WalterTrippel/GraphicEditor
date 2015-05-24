@@ -643,11 +643,11 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 _direction = None;
                 _normalize = NormalizeLeft;
             }
-            else if(belongToSecondCorners(p, tl, br))
+            /*else if(belongToSecondCorners(p, tl, br))
             {
                 _direction = None;
                 _normalize = NormalizeRight;
-            }
+            }*/
             else if((p.x() <= tl.x() && p.x() > tl.x() - 3) &&
                     p.y() > tl.y() - 3 && p.y() < br.y())
             {
@@ -691,6 +691,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
             {
                 _direction = None;
 
+                currentScene->edge()->hide();
                 if(point.x() > sceneRect().topLeft().x()
                         && point.y() > sceneRect().topLeft().y()
                         && point.x() < sceneRect().bottomRight().x()
@@ -712,7 +713,7 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
 {
     if(!enableFill)
     {
-        if(!isMoved && !(event->buttons() & Qt::Key::Key_R))
+        if(!isMoved)
         {
             AbstractShape * item = currentShape();
             QPointF p = event->pos();
@@ -735,10 +736,10 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
                     {
                         setCursor(Qt::SizeBDiagCursor);
                     }
-                    else if(belongToSecondCorners(p, tl, br))
+                    /*else if(belongToSecondCorners(p, tl, br))
                     {
                         setCursor(Qt::SizeFDiagCursor);
-                    }
+                    }*/
                     else if(((p.x() <= tl.x() && p.x() > tl.x() - 3) &&
                         p.y() > tl.y() - 3 && p.y() < br.y()) ||
                         ((p.x() > br.x() - 3 && p.x() <= br.x()) &&
@@ -836,16 +837,33 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
                         }
                         }
                         item->draw(startX(), startY(), endX(), endY());
-                        //edge->draw(startX(), startY(), endX(), endY());
+                        currentScene->edge()->draw(startX(), startY(),
+                                                   endX(), endY());
                         currentScene->update();
 
                         switch(_normalize)
                         {
                         case NormalizeLeft:
                         {
+
+                            _startX = point.x();
+                            _startY = point.y();
                             item->normalize(point.x(), point.y(),
                                             point.x() - rect().topLeft().x());
-                            currentScene->update();
+                            QRectF tmp = item->boundingRect();
+                            currentScene->edge()->draw(tmp.topLeft().x(), tmp.topLeft().y(),
+                                                       tmp.bottomRight().x(), tmp.bottomRight().y());
+                            _startX = tmp.topLeft().x();
+                            _startY = tmp.topLeft().y();
+                            _endX = tmp.bottomRight().x();
+                            _endY = tmp.bottomRight().y();
+
+                            if(item->type() == Triangle::TriangleType::Type)
+                            {
+                                ((Triangle*)item)->normalizeFlag = true;
+                                _startX = point.x();
+                                _startY = point.y();
+                            }
                             break;
                         }
                         }
@@ -879,32 +897,74 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
                                 coordinatesIterationMove.y());
 
             preventOverBoundingOnMove(r, tmp);
-
             currentScene->currentShape()->setPen(currentPen);
-            currentScene->currentShape()->draw(startX(), startY(), endX(), endY());
+            if(currentShape()->type() == Triangle::TriangleType::Type &&
+                    _normalize == NormalizeLeft)
+            {
+                currentScene->currentShape()->normalize(startX(), startY(),
+                                   endX() - rect().topLeft().x());
+            }
+            else
+            {
+                currentScene->currentShape()->draw(startX(), startY(), endX(), endY());
+            }
+            currentScene->edge()->hide();
             currentScene->update();
             coordinatesIterationMove = event->pos();
+        }
+    }
+    else
+    {
+        AbstractShape * tmp = currentShape();
+        if(tmp->isUnderMouse())
+        {
+            setCursor(Qt::PointingHandCursor);
+        }
+        else
+        {
+            setCursor(Qt::CrossCursor);
         }
     }
 }
 
 void Canvas::mouseReleaseEvent(QMouseEvent *)
 {
+
+    if(currentShape()->type() != LineSegment::LineSegmentType::Type)
+    {
+        AbstractShape * item = currentShape();
+        currentScene->edge()->setPen(currentPen);
+        QRectF tmp = item->boundingRect();
+        currentScene->edge()->draw(tmp.topLeft().x(), tmp.topLeft().y(),
+                                   tmp.bottomRight().x(), tmp.bottomRight().y());
+        currentScene->edge()->show();
+        currentScene->update();
+        edgeLocker = false;
+    }
+
     isMoved = false;
-    enableFill = false;
+    if(enableFill)
+    {
+        enableFill = false;
+        currentScene->currentShape()->setPen(currentPen);
+        if(currentShape()->type() == Triangle::TriangleType::Type &&
+                ((Triangle *)currentShape())->normalizeFlag)
+        {
+            currentScene->currentShape()->normalize(startX(), startY(),
+                            startX() - rect().topLeft().x());
+        }
+        else
+        {
+            currentScene->currentShape()->draw(startX(), startY(), endX(), endY());
+        }
+        currentScene->update();
+    }
+    else
+        _normalize = NormalizeNone;
     if(buttonPressed)
     {
         _direction = None;
         _normalize = NormalizeNone;
-
-        /*if(edgeLocker && currentShape()->type() != AbstractShape::AbstractType::Type + 1)
-        {
-            currentScene->currentEdge()->setPen(currentPen);
-            currentScene->currentEdge()->draw(startX(), startY(), endX(), endY());
-            currentScene->currentEdge()->show();
-            currentScene->update();
-            edgeLocker = false;
-        }*/
 
         isMoved = false;
         shapeDrawn = true;

@@ -16,6 +16,7 @@
 #include "canvasobserver.h"
 #include "shapes/rectangle.h"
 #include "shapes/linesegment.h"
+#include "shapes/triangle.h"
 
 class Canvas : public QGraphicsView
 {

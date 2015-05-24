@@ -2,12 +2,21 @@
 #include "shapes/linesegment.h"
 #include <QDebug>
 
-Scene::Scene(QObject * parent) : QGraphicsScene(parent)
+Scene::Scene(QObject * parent) : QGraphicsScene(parent),
+                                 commonEdge(new EdgeRectangle)
 {
+    addItem(commonEdge);
 }
 
 Scene::~Scene()
 {
+    delete commonEdge;
+    commonEdge = nullptr;
+}
+
+EdgeRectangle * Scene::edge() const
+{
+    return commonEdge;
 }
 
 AbstractShape * Scene::currentShape()

@@ -21,6 +21,8 @@ public:
     virtual void draw(qreal x1, qreal y1, qreal x2, qreal y2);
     virtual QGraphicsItem * currentEdge() const;
     virtual void normalize(qreal x1, qreal y1, qreal width);
+
+    bool normalizeFlag;
 };
 
 #endif // TRIANGLE_H
