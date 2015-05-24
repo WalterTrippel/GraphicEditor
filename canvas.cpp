@@ -85,13 +85,13 @@ void Canvas::removeCurrentEdge()
 
 void Canvas::addShape(AbstractShape *shape)
 {
-    /*if(!shapeDrawn)
+    if(!shapeDrawn)
     {
         AbstractShape * undrawnShape = currentShape();
         currentScene->removeItem(undrawnShape);
         delete undrawnShape;
         undrawnShape = nullptr;
-    }*/
+    }
 
     if(shape->type() == LineSegment::LineSegmentType::Type)
     {

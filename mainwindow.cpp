@@ -3,6 +3,7 @@
 
 #include <QDebug>
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -31,6 +32,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->bFill, SIGNAL(released()), this, SLOT(buttonFill()));
     connect(ui->rShowName, SIGNAL(clicked(bool)), this, SLOT(showNames()));
     connect(ui->rHideName, SIGNAL(clicked(bool)), this, SLOT(hideNames()));
+    connect(ui->listWidget, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
+
+
+
+
+
+    connect(ui->listWidget, SIGNAL(itemAdded(bool)), this, SLOT(addItem(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -68,15 +76,38 @@ AbstractShape * MainWindow::lastDrawnShape() const
 {
     switch(lastDrawnShapeType)
     {
-    case Line: return new LineSegment;
+    case Line:
+    {
+        LineSegment * tmp = new LineSegment;
+        ui->listWidget->addItem(tmp->getName());
+        return tmp;
         break;
-    case RectangleType: return new Rectangle;
+    }
+    case RectangleType:
+    {
+        Rectangle * tmp = new Rectangle;
+        ui->listWidget->addItem(tmp->getName());
+        return tmp;
         break;
-    case EllipseType: return new Ellipse;
+    }
+    case EllipseType:
+    {
+        Ellipse * tmp = new Ellipse;
+        ui->listWidget->addItem(tmp->getName());
+        return tmp;
         break;
-    case TriangleType: return new Triangle;
-    default: return nullptr;
+    }
+    case TriangleType:
+    {
+        Triangle * tmp = new Triangle;
+        ui->listWidget->addItem(tmp->getName());
+        return tmp;
+    }
+    default:
+    {
+        return nullptr;
         break;
+    }
     }
 }
 
@@ -215,4 +246,9 @@ void MainWindow::hideNames()
     ui->rShowName->setChecked(false);
 
     ((Canvas*)ui->tabWidget->currentWidget())->hideNames();
+}
+
+void MainWindow::itemClicked(QModelIndex index)
+{
+    QMessageBox::information(this, "Hi", "Clicked " + index.data().toString());
 }

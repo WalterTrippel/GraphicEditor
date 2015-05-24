@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QMessageBox>
+#include <QModelIndex>
 #include <QMainWindow>
 #include <QInputDialog>
 #include <QMouseEvent>
@@ -59,6 +61,8 @@ private slots:
 
     void showNames();
     void hideNames();
+
+    void itemClicked(QModelIndex index);
 
     //void closeTab();
     //void closeTab(int tabIndex);

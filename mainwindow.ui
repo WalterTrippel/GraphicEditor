@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>731</width>
+    <width>778</width>
     <height>383</height>
    </rect>
   </property>
@@ -61,7 +61,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>731</width>
+     <width>778</width>
      <height>19</height>
     </rect>
    </property>
@@ -201,7 +201,7 @@
      <item>
       <widget class="QRadioButton" name="rHideName">
        <property name="text">
-        <string>Hide Name</string>
+        <string>&amp;Hide Name</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -222,6 +222,23 @@
       </spacer>
      </item>
     </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget">
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <widget class="QListWidget" name="listWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>251</width>
+       <height>311</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
   </widget>
   <action name="actionNew">
@@ -256,11 +273,6 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="actionAbout_Qt">
-   <property name="text">
-    <string>&amp;About Qt</string>
-   </property>
-  </action>
   <action name="actionShowDrawingTools">
    <property name="text">
     <string>&amp;Show Drawing Tools</string>
@@ -277,6 +289,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="actionShow_List_View">
+   <property name="text">
+    <string>&amp;Show List View</string>
+   </property>
+  </action>
+  <action name="action_Hide_List_View">
+   <property name="text">
+    <string>&amp;Hide List View</string>
    </property>
   </action>
  </widget>

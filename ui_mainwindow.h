@@ -18,6 +18,7 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
@@ -38,10 +39,11 @@ public:
     QAction *actionOpen;
     QAction *actionSave;
     QAction *actionExit;
-    QAction *actionAbout_Qt;
     QAction *actionShowDrawingTools;
     QAction *actionHideDrawingTools;
     QAction *actionCloseTab;
+    QAction *actionShow_List_View;
+    QAction *action_Hide_List_View;
     QWidget *centralWidget;
     QGridLayout *gridLayout;
     QTabWidget *tabWidget;
@@ -66,12 +68,15 @@ public:
     QRadioButton *rShowName;
     QRadioButton *rHideName;
     QSpacerItem *verticalSpacer;
+    QDockWidget *dockWidget;
+    QWidget *dockWidgetContents;
+    QListWidget *listWidget;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(731, 383);
+        MainWindow->resize(778, 383);
         actionNew = new QAction(MainWindow);
         actionNew->setObjectName(QStringLiteral("actionNew"));
         actionOpen = new QAction(MainWindow);
@@ -80,14 +85,16 @@ public:
         actionSave->setObjectName(QStringLiteral("actionSave"));
         actionExit = new QAction(MainWindow);
         actionExit->setObjectName(QStringLiteral("actionExit"));
-        actionAbout_Qt = new QAction(MainWindow);
-        actionAbout_Qt->setObjectName(QStringLiteral("actionAbout_Qt"));
         actionShowDrawingTools = new QAction(MainWindow);
         actionShowDrawingTools->setObjectName(QStringLiteral("actionShowDrawingTools"));
         actionHideDrawingTools = new QAction(MainWindow);
         actionHideDrawingTools->setObjectName(QStringLiteral("actionHideDrawingTools"));
         actionCloseTab = new QAction(MainWindow);
         actionCloseTab->setObjectName(QStringLiteral("actionCloseTab"));
+        actionShow_List_View = new QAction(MainWindow);
+        actionShow_List_View->setObjectName(QStringLiteral("actionShow_List_View"));
+        action_Hide_List_View = new QAction(MainWindow);
+        action_Hide_List_View->setObjectName(QStringLiteral("action_Hide_List_View"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         centralWidget->setMouseTracking(false);
@@ -119,7 +126,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 731, 19));
+        menuBar->setGeometry(QRect(0, 0, 778, 19));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuView = new QMenu(menuBar);
@@ -202,6 +209,15 @@ public:
 
         drawingTools->setWidget(dockWidgetContents_2);
         MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(1), drawingTools);
+        dockWidget = new QDockWidget(MainWindow);
+        dockWidget->setObjectName(QStringLiteral("dockWidget"));
+        dockWidgetContents = new QWidget();
+        dockWidgetContents->setObjectName(QStringLiteral("dockWidgetContents"));
+        listWidget = new QListWidget(dockWidgetContents);
+        listWidget->setObjectName(QStringLiteral("listWidget"));
+        listWidget->setGeometry(QRect(0, 0, 251, 311));
+        dockWidget->setWidget(dockWidgetContents);
+        MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dockWidget);
 
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuView->menuAction());
@@ -243,11 +259,12 @@ public:
         actionSave->setShortcut(QApplication::translate("MainWindow", "Ctrl+S", 0));
         actionExit->setText(QApplication::translate("MainWindow", "&Exit", 0));
         actionExit->setShortcut(QApplication::translate("MainWindow", "Ctrl+Q", 0));
-        actionAbout_Qt->setText(QApplication::translate("MainWindow", "&About Qt", 0));
         actionShowDrawingTools->setText(QApplication::translate("MainWindow", "&Show Drawing Tools", 0));
         actionHideDrawingTools->setText(QApplication::translate("MainWindow", "&Hide Drawing Tools", 0));
         actionCloseTab->setText(QApplication::translate("MainWindow", "&Close Tab", 0));
         actionCloseTab->setShortcut(QApplication::translate("MainWindow", "Ctrl+W", 0));
+        actionShow_List_View->setText(QApplication::translate("MainWindow", "&Show List View", 0));
+        action_Hide_List_View->setText(QApplication::translate("MainWindow", "&Hide List View", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "New", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Tab 2", 0));
         menuFile->setTitle(QApplication::translate("MainWindow", "Fi&le", 0));
@@ -279,7 +296,7 @@ public:
 #endif // QT_NO_TOOLTIP
         bPenWidth->setText(QApplication::translate("MainWindow", "Pen Width", 0));
         rShowName->setText(QApplication::translate("MainWindow", "Show Na&me", 0));
-        rHideName->setText(QApplication::translate("MainWindow", "Hide Name", 0));
+        rHideName->setText(QApplication::translate("MainWindow", "&Hide Name", 0));
     } // retranslateUi
 
 };

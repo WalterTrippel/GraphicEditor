@@ -815,6 +815,9 @@ release/mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qstyle.h \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qtabbar.h \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qrubberband.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QListWidget \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qlistwidget.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qlistview.h \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QMenu \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qmenu.h \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QMenuBar \
@@ -822,6 +825,8 @@ release/mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QPushButton \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qpushbutton.h \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qabstractbutton.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QRadioButton \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qradiobutton.h \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QSpacerItem \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QStatusBar \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qstatusbar.h \
@@ -1375,7 +1380,8 @@ release/rectangle.o: shapes/rectangle.cpp shapes/rectangle.h \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtGui/qfontinfo.h \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtGui/qfont.h \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtGui/qfontmetrics.h \
-		shapes/edgerectangle.h
+		shapes/edgerectangle.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release/rectangle.o shapes/rectangle.cpp
 
 release/edgerectangle.o: shapes/edgerectangle.cpp shapes/edgerectangle.h \
