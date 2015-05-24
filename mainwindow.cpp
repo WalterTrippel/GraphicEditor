@@ -19,6 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->removeTab(0);
     ui->tabWidget->removeTab(0);
 
+    ui->rShowName->setChecked(true);
+    ui->rHideName->setChecked(false);
+
     connect(ui->bPenColor, SIGNAL(released()), this, SLOT(buttonPenColorAction()));
     connect(ui->bDrawLine, SIGNAL(released()), this, SLOT(buttonLineAction()));
     connect(ui->bDrawRectangle, SIGNAL(released()), this, SLOT(buttonRectAction()));
@@ -26,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->bPenWidth, SIGNAL(released()), this, SLOT(buttonPenWidthAction()));
     connect(ui->bTriangle, SIGNAL(released()), this, SLOT(buttonTriangleAction()));
     connect(ui->bFill, SIGNAL(released()), this, SLOT(buttonFill()));
+    connect(ui->rShowName, SIGNAL(clicked(bool)), this, SLOT(showNames()));
+    connect(ui->rHideName, SIGNAL(clicked(bool)), this, SLOT(hideNames()));
 }
 
 MainWindow::~MainWindow()
@@ -124,7 +129,6 @@ void MainWindow::buttonLineAction()
     {
         lastDrawnShapeType = Line;
 
-        //((Canvas *)ui->tabWidget->currentWidget())->addShape((AbstractShape *)lastDrawnShape()->currentEdge());
         ((Canvas *)ui->tabWidget->currentWidget())->addShape(lastDrawnShape());
     }
 }
@@ -137,7 +141,6 @@ void MainWindow::buttonRectAction()
     {
         lastDrawnShapeType = RectangleType;
 
-        //((Canvas *)ui->tabWidget->currentWidget())->addShape((AbstractShape *)lastDrawnShape()->currentEdge());
         ((Canvas *)ui->tabWidget->currentWidget())->addShape(lastDrawnShape());
     }
 }
@@ -198,4 +201,18 @@ void MainWindow::buttonPenWidthAction()
         int width(QInputDialog::getInt(this, tr("Enter Pen Width"), tr("Pen Width, px")));
         ((Canvas*)ui->tabWidget->currentWidget())->setWidth(width);
     }
+}
+
+void MainWindow::showNames()
+{
+    ui->rHideName->setChecked(false);
+
+    ((Canvas*)ui->tabWidget->currentWidget())->showNames();
+}
+
+void MainWindow::hideNames()
+{
+    ui->rShowName->setChecked(false);
+
+    ((Canvas*)ui->tabWidget->currentWidget())->hideNames();
 }

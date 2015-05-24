@@ -6,6 +6,8 @@ Triangle::Triangle(const QPen & pen, const QBrush & brush,
                                               edge(new EdgeRectangle),
                                               normalizeFlag(false)
 {
+    _id = getId();
+    name = getName();
 }
 
 Triangle::~Triangle()
@@ -68,5 +70,14 @@ void Triangle::normalize(qreal x1, qreal y1, qreal width)
 
 void Triangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    QRectF tmp = boundingRect();
+    painter->setPen(Qt::black);
+    painter->drawText(tmp.center().x(), tmp.center().y(), name);
+
     self->paint(painter, option, widget);
+}
+
+QString Triangle::getName() const
+{
+    return QString("Triangle_").append(std::to_string(_id).c_str());
 }

@@ -5,6 +5,8 @@ LineSegment::LineSegment(const QPen &pen, const QBrush &brush,
                                                   self(new QGraphicsLineItem),
                                                   edge(new EdgeRectangle)
 {
+    _id = getId();
+    name = getName();
 }
 
 LineSegment::~LineSegment()
@@ -44,6 +46,14 @@ void LineSegment::draw(qreal x1, qreal y1, qreal x2, qreal y2)
 void LineSegment::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                         QWidget *widget)
 {
-    //painter->drawRect(self->boundingRect());
+    QRectF tmp = boundingRect();
+    painter->setPen(Qt::black);
+    painter->drawText(tmp.center().x(), tmp.center().y(), name);
+
     self->paint(painter, option, widget);
+}
+
+QString LineSegment::getName() const
+{
+    return QString("Line_").append(std::to_string(_id).c_str());
 }

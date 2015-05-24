@@ -6,8 +6,10 @@
 
 class EdgeRectangle : public AbstractShape
 {
+    long _id;
     QGraphicsRectItem * self;
 public:
+
     enum EdgeRectangleType {Type = AbstractType::Type + 3};
     explicit EdgeRectangle(const QPen & pen = QPen(), const QBrush & brush = QBrush(),
                            AbstractShape * parent = nullptr);
@@ -19,6 +21,8 @@ public:
     virtual void draw(qreal x1, qreal y1, qreal x2, qreal y2);
     virtual QGraphicsItem * currentEdge() const;
     void normalize(qreal x1, qreal y1, qreal width);
+
+    virtual QString getName() const;
 };
 
 #endif // EDGERECTANGLE_H

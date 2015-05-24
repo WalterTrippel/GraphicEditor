@@ -1,10 +1,14 @@
 #include "rectangle.h"
 
+#include <QDebug>
+
 Rectangle::Rectangle(const QPen & pen, const QBrush & brush,
                      AbstractShape * parent): AbstractShape(pen, brush, parent),
                                               self(new QGraphicsRectItem),
                                               edge(new EdgeRectangle)
 {
+    _id = getId();
+    name = getName();
 }
 
 Rectangle::~Rectangle()
@@ -75,7 +79,16 @@ void Rectangle::normalize(qreal x1, qreal y1, qreal width)
 
 void Rectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    //painter->drawRect(self->boundingRect());
+    QRectF tmp = boundingRect();
+    painter->setPen(Qt::black);
+
+    painter->drawText(tmp.center().x(), tmp.center().y(), name);
+
     self->paint(painter, option, widget);
+}
+
+QString Rectangle::getName() const
+{
+    return QString("Rectangle_").append(std::to_string(_id).c_str());
 }
 

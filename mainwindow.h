@@ -57,6 +57,9 @@ private slots:
 
     void buttonFill();
 
+    void showNames();
+    void hideNames();
+
     //void closeTab();
     //void closeTab(int tabIndex);
 };

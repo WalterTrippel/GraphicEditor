@@ -7,6 +7,7 @@
 
 class LineSegment : public AbstractShape
 {
+    long _id;
     QGraphicsLineItem * self;
     EdgeRectangle * edge;
 public:
@@ -23,6 +24,7 @@ public:
     virtual QGraphicsItem * currentEdge() const;
     void normalize(qreal x1, qreal y1, qreal width);
 
+    virtual QString getName() const;
 };
 
 #endif // LINESEGMENT_H

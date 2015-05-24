@@ -32,6 +32,36 @@ Canvas::~Canvas()
     currentScene = nullptr;
 }
 
+void Canvas::hideNames()
+{
+    for(auto &i : currentScene->shapes)
+    {
+        i->name = "";
+        i->update();
+    }
+    for(auto &i : currentScene->lines)
+    {
+        i->name = "";
+        i->update();
+    }
+    currentScene->update();
+}
+
+void Canvas::showNames()
+{
+    for(auto &i : currentScene->shapes)
+    {
+        i->name = i->getName();
+        i->update();
+    }
+    for(auto &i : currentScene->lines)
+    {
+        i->name = i->getName();
+        i->update();
+    }
+    currentScene->update();
+}
+
 bool Canvas::isFill() const
 {
     return enableFill;

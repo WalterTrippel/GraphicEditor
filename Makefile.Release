@@ -779,6 +779,54 @@ release/mainwindow.o: mainwindow.cpp mainwindow.h \
 		shapes/ellipse.h \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QGraphicsEllipseItem \
 		ui_mainwindow.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtCore/QVariant \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QAction \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qaction.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qactiongroup.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QApplication \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qapplication.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtCore/qcoreapplication.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtCore/qeventloop.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qdesktopwidget.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtGui/qguiapplication.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtGui/qinputmethod.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QButtonGroup \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qbuttongroup.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QDockWidget \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qdockwidget.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QGridLayout \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qgridlayout.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qlayout.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qlayoutitem.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qboxlayout.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QHBoxLayout \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QHeaderView \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qheaderview.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qabstractitemview.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtCore/qabstractitemmodel.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtCore/qitemselectionmodel.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qabstractitemdelegate.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qstyleoption.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qabstractspinbox.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtGui/qvalidator.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtCore/qregularexpression.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qslider.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qabstractslider.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qstyle.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qtabbar.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qrubberband.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QMenu \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qmenu.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QMenuBar \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qmenubar.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QPushButton \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qpushbutton.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qabstractbutton.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QSpacerItem \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QStatusBar \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/qstatusbar.h \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QTabWidget \
+		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtWidgets/QVBoxLayout \
 		../../crosscompiling/mxe/usr/i686-w64-mingw32.static/qt5/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release/mainwindow.o mainwindow.cpp
 

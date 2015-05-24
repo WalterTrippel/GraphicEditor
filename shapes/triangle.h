@@ -7,6 +7,7 @@
 
 class Triangle : public AbstractShape
 {
+    long _id;
     QGraphicsPolygonItem * self;
     EdgeRectangle * edge;
 public:
@@ -21,6 +22,8 @@ public:
     virtual void draw(qreal x1, qreal y1, qreal x2, qreal y2);
     virtual QGraphicsItem * currentEdge() const;
     virtual void normalize(qreal x1, qreal y1, qreal width);
+
+    virtual QString getName() const;
 
     bool normalizeFlag;
 };

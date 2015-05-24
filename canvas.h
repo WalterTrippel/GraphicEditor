@@ -53,6 +53,9 @@ public:
     bool sceneLocker(QPointF point);
     void removeCurrentEdge();
 
+    void showNames();
+    void hideNames();
+
 private:
     ResizeDirection _direction;
     NormalizeDirection _normalize;

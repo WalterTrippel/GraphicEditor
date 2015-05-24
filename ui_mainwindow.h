@@ -22,6 +22,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
@@ -62,6 +63,8 @@ public:
     QFrame *line;
     QPushButton *bPenColor;
     QPushButton *bPenWidth;
+    QRadioButton *rShowName;
+    QRadioButton *rHideName;
     QSpacerItem *verticalSpacer;
 
     void setupUi(QMainWindow *MainWindow)
@@ -182,6 +185,17 @@ public:
 
         verticalLayout->addWidget(bPenWidth);
 
+        rShowName = new QRadioButton(dockWidgetContents_2);
+        rShowName->setObjectName(QStringLiteral("rShowName"));
+
+        verticalLayout->addWidget(rShowName);
+
+        rHideName = new QRadioButton(dockWidgetContents_2);
+        rHideName->setObjectName(QStringLiteral("rHideName"));
+        rHideName->setChecked(true);
+
+        verticalLayout->addWidget(rHideName);
+
         verticalSpacer = new QSpacerItem(20, 94, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout->addItem(verticalSpacer);
@@ -264,6 +278,8 @@ public:
         bPenWidth->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Set Pen Width</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         bPenWidth->setText(QApplication::translate("MainWindow", "Pen Width", 0));
+        rShowName->setText(QApplication::translate("MainWindow", "Show Na&me", 0));
+        rHideName->setText(QApplication::translate("MainWindow", "Hide Name", 0));
     } // retranslateUi
 
 };

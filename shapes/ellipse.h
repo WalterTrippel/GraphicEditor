@@ -7,6 +7,7 @@
 
 class Ellipse : public AbstractShape
 {
+    long _id;
     QGraphicsEllipseItem * self;
     EdgeRectangle * edge;
 public:
@@ -22,6 +23,8 @@ public:
 
     virtual QGraphicsItem * currentEdge() const;
     void normalize(qreal x1, qreal y1, qreal width);
+
+    virtual QString getName() const;
 };
 
 #endif // ELLIPSE_H

@@ -4,6 +4,8 @@ EdgeRectangle::EdgeRectangle(const QPen & pen, const QBrush & brush,
                              AbstractShape * parent) : AbstractShape(pen, brush, parent),
                                                        self(new QGraphicsRectItem)
 {
+    _id = getId();
+    name = getName();
 }
 
 EdgeRectangle::~EdgeRectangle()
@@ -29,6 +31,10 @@ QRectF EdgeRectangle::boundingRect() const
 
 void EdgeRectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    QRectF tmp = boundingRect();
+    painter->setPen(Qt::black);
+    painter->drawText(tmp, name);
+
     self->paint(painter, option, widget);
 }
 
@@ -43,5 +49,11 @@ void EdgeRectangle::draw(qreal x1, qreal y1, qreal x2, qreal y2)
     self->setPen(localpen);
     self->setBrush(brush());
     self->setRect(x1, y1, x2 - x1, y2 - y1);
+}
+
+QString EdgeRectangle::getName() const
+{
+    //return QString("Edge_").append(std::to_string(_id).c_str());
+    return "";
 }
 
