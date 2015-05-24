@@ -243,7 +243,7 @@ void Canvas::checkIfProperRect(QPointF & tl, QPointF & br,
     }
 }
 
-void Canvas::preventOverBoundingOnDraw(QPointF point)
+void Canvas::preventOverBoundingOnDraw(QPointF point, int & _endX, int & _endY)
 {
     if(point.x() > sceneRect().topLeft().x()
             && point.y() > sceneRect().topLeft().y()
@@ -909,7 +909,7 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
             if(event->buttons() & Qt::LeftButton && _direction == None
                     && _normalize == NormalizeNone)
             {
-                preventOverBoundingOnDraw(point);
+                preventOverBoundingOnDraw(point, _endX, _endY);
 
                 if(shapeSet)
                 {
@@ -947,6 +947,9 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
             {
                 for(auto i: linePointIndexes)
                 {
+                    preventOverBoundingOnDraw(linesEnds[linePointIndexes.indexOf(i)],
+                            linesEnds[linePointIndexes.indexOf(i)].rx(),
+                            linesEnds[linePointIndexes.indexOf(i)].ry());
                     linesEnds[linePointIndexes.indexOf(i)] += tmp;
                     currentScene->lines.at(i)->draw(linesStarts[linePointIndexes.indexOf(i)].x(),
                             linesStarts[linePointIndexes.indexOf(i)].y(),

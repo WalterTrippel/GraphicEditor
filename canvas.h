@@ -74,7 +74,7 @@ private:
     bool enableFill;
 
     void checkIfProperRect(QPointF & tl, QPointF & br, QPointF & tr, QPointF & bl);
-    void preventOverBoundingOnDraw(QPointF point);
+    void preventOverBoundingOnDraw(QPointF point, int & _endX, int & _endY);
     void preventOverBoundingOnMove(QRectF rect, QPointF increment);
 
     bool belongToFirstCorners(QPointF point, QPointF tl, QPointF br);
