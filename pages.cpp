@@ -3,28 +3,31 @@
 ConfigurationPage::ConfigurationPage(QWidget *parent)
     : QWidget(parent)
 {
-    QGroupBox *configGroup = new QGroupBox(tr("Server configuration"));
+    QGroupBox * configGroup = new QGroupBox(tr("Item lifecicle"));
 
-    QLabel *serverLabel = new QLabel(tr("Server:"));
-    QComboBox *serverCombo = new QComboBox;
-    serverCombo->addItem(tr("Qt (Australia)"));
-    serverCombo->addItem(tr("Qt (Germany)"));
-    serverCombo->addItem(tr("Qt (Norway)"));
-    serverCombo->addItem(tr("Qt (People's Republic of China)"));
-    serverCombo->addItem(tr("Qt (USA)"));
+    QLabel * deleteLabel = new QLabel(tr("Delete:"));
+    QPushButton * deleteButton = new QPushButton(tr("remove item"));
 
-    QHBoxLayout *serverLayout = new QHBoxLayout;
-    serverLayout->addWidget(serverLabel);
-    serverLayout->addWidget(serverCombo);
+    QHBoxLayout * deleteLayout = new QHBoxLayout;
+    deleteLayout->addWidget(deleteLabel);
+    deleteLayout->addWidget(deleteButton);
 
-    QVBoxLayout *configLayout = new QVBoxLayout;
-    configLayout->addLayout(serverLayout);
+    QVBoxLayout * configLayout = new QVBoxLayout;
+    configLayout->addLayout(deleteLayout);
     configGroup->setLayout(configLayout);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    QVBoxLayout * mainLayout = new QVBoxLayout;
     mainLayout->addWidget(configGroup);
     mainLayout->addStretch(1);
     setLayout(mainLayout);
+
+    connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(itemRemoved()));
+}
+
+void ConfigurationPage::itemRemoved()
+{
+    emit deleteItem();
+    close();
 }
 
 UpdatePage::UpdatePage(QWidget *parent)
@@ -62,48 +65,6 @@ UpdatePage::UpdatePage(QWidget *parent)
     mainLayout->addWidget(packageGroup);
     mainLayout->addSpacing(12);
     mainLayout->addWidget(startUpdateButton);
-    mainLayout->addStretch(1);
-    setLayout(mainLayout);
-}
-
-QueryPage::QueryPage(QWidget *parent)
-    : QWidget(parent)
-{
-    QGroupBox *packagesGroup = new QGroupBox(tr("Look for packages"));
-
-    QLabel *nameLabel = new QLabel(tr("Name:"));
-    QLineEdit *nameEdit = new QLineEdit;
-
-    QLabel *dateLabel = new QLabel(tr("Released after:"));
-    QDateTimeEdit *dateEdit = new QDateTimeEdit(QDate::currentDate());
-
-    QCheckBox *releasesCheckBox = new QCheckBox(tr("Releases"));
-    QCheckBox *upgradesCheckBox = new QCheckBox(tr("Upgrades"));
-
-    QSpinBox *hitsSpinBox = new QSpinBox;
-    hitsSpinBox->setPrefix(tr("Return up to "));
-    hitsSpinBox->setSuffix(tr(" results"));
-    hitsSpinBox->setSpecialValueText(tr("Return only the first result"));
-    hitsSpinBox->setMinimum(1);
-    hitsSpinBox->setMaximum(100);
-    hitsSpinBox->setSingleStep(10);
-
-    QPushButton *startQueryButton = new QPushButton(tr("Start query"));
-
-    QGridLayout *packagesLayout = new QGridLayout;
-    packagesLayout->addWidget(nameLabel, 0, 0);
-    packagesLayout->addWidget(nameEdit, 0, 1);
-    packagesLayout->addWidget(dateLabel, 1, 0);
-    packagesLayout->addWidget(dateEdit, 1, 1);
-    packagesLayout->addWidget(releasesCheckBox, 2, 0);
-    packagesLayout->addWidget(upgradesCheckBox, 3, 0);
-    packagesLayout->addWidget(hitsSpinBox, 4, 0, 1, 2);
-    packagesGroup->setLayout(packagesLayout);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addWidget(packagesGroup);
-    mainLayout->addSpacing(12);
-    mainLayout->addWidget(startQueryButton);
     mainLayout->addStretch(1);
     setLayout(mainLayout);
 }

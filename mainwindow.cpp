@@ -250,6 +250,8 @@ void MainWindow::itemDoubleClicked(QModelIndex index)
     //QMessageBox::information(this, "Hi", "Clicked " + index.data().toString());
     ConfigDialog * dialog = new ConfigDialog;
     dialog->show();
+
+    connect(dialog, SIGNAL(sendItemDeleted()), this, SLOT(receiveItemDeleted()));
 }
 
 void MainWindow::addedItem(QString name)
@@ -276,4 +278,10 @@ void MainWindow::itemClicked(QModelIndex index)
 {
     QString name = index.data().toString();
     ((Canvas*)ui->tabWidget->currentWidget())->makeCurrentByName(name);
+}
+
+void MainWindow::receiveItemDeleted()
+{
+    delete ui->listWidget->currentItem();
+    ((Canvas*)ui->tabWidget->currentWidget())->removeCurrentItem();
 }

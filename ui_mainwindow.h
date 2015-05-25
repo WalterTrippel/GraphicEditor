@@ -229,6 +229,8 @@ public:
         menuFile->addAction(actionExit);
         menuView->addAction(actionShowDrawingTools);
         menuView->addAction(actionHideDrawingTools);
+        menuView->addAction(actionShow_List_View);
+        menuView->addAction(action_Hide_List_View);
 
         retranslateUi(MainWindow);
         QObject::connect(actionShowDrawingTools, SIGNAL(triggered()), drawingTools, SLOT(show()));

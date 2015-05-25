@@ -16,14 +16,13 @@
 
 class ConfigurationPage : public QWidget
 {
+    Q_OBJECT
 public:
-    ConfigurationPage(QWidget *parent = 0);
-};
-
-class QueryPage : public QWidget
-{
-public:
-    QueryPage(QWidget *parent = 0);
+    explicit ConfigurationPage(QWidget *parent = 0);
+signals:
+    void deleteItem();
+public slots:
+    void itemRemoved();
 };
 
 class UpdatePage : public QWidget

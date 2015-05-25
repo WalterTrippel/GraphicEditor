@@ -36,6 +36,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     virtual void drawSameShapeType() final;
+signals:
+    void notifyItemDeleted();
 
 private:
     Ui::MainWindow *ui;
@@ -71,6 +73,7 @@ private slots:
     void closeTab(int tabIndex);
 
     void itemClicked(QModelIndex index);
+    void receiveItemDeleted();
 };
 
 #endif // MAINWINDOW_H

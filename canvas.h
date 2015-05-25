@@ -17,12 +17,13 @@
 #include "shapes/rectangle.h"
 #include "shapes/linesegment.h"
 #include "shapes/triangle.h"
+#include "mainwindow.h"
 
 class Canvas : public QGraphicsView
 {
     Q_OBJECT
 public:
-    explicit Canvas(QGraphicsView * parent = 0);
+    explicit Canvas(QGraphicsView * parent = nullptr);
     ~Canvas();
 
     enum ResizeDirection {None, Left, Top, Right, Bottom};
@@ -52,12 +53,12 @@ public:
     void removeObserver(CanvasObserver * observer);
     bool sceneLocker(QPointF point);
     void removeCurrentEdge();
+    void removeCurrentItem();
 
     void showNames();
     void hideNames();
 
     void makeCurrentByName(QString name);
-
 
 signals:
     void addName(QString);

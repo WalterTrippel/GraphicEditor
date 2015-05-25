@@ -12,11 +12,12 @@ ConfigDialog::ConfigDialog()
     contentsWidget->setSpacing(12);
 
     pagesWidget = new QStackedWidget;
-    pagesWidget->addWidget(new ConfigurationPage);
+    //signal slot diagramm
+    ConfigurationPage * cp = new ConfigurationPage;
+    pagesWidget->addWidget(cp);
     pagesWidget->addWidget(new UpdatePage);
-    pagesWidget->addWidget(new QueryPage);
 
-    QPushButton *closeButton = new QPushButton(tr("Close"));
+    QPushButton * closeButton = new QPushButton(tr("Close"));
 
     createIcons();
     contentsWidget->setCurrentRow(0);
@@ -39,6 +40,13 @@ ConfigDialog::ConfigDialog()
     setLayout(mainLayout);
 
     setWindowTitle(tr("Config Dialog"));
+    connect(cp, SIGNAL(deleteItem()), this, SLOT(receiveItemDeletion()));
+}
+
+void ConfigDialog::receiveItemDeletion()
+{
+    emit sendItemDeleted();
+    close();
 }
 
 void ConfigDialog::createIcons()
@@ -54,12 +62,6 @@ void ConfigDialog::createIcons()
     updateButton->setText(tr("Update"));
     updateButton->setTextAlignment(Qt::AlignHCenter);
     updateButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-    QListWidgetItem *queryButton = new QListWidgetItem(contentsWidget);
-    queryButton->setIcon(QIcon(":/images/query.png"));
-    queryButton->setText(tr("Query"));
-    queryButton->setTextAlignment(Qt::AlignHCenter);
-    queryButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     connect(contentsWidget,
             SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),

@@ -10,15 +10,18 @@ class ConfigDialog : public QDialog
 
 public:
     ConfigDialog();
+signals:
+    void sendItemDeleted();
 
 public slots:
     void changePage(QListWidgetItem *current, QListWidgetItem *previous);
+    void receiveItemDeletion();
 
 private:
     void createIcons();
 
-    QListWidget *contentsWidget;
-    QStackedWidget *pagesWidget;
+    QListWidget * contentsWidget;
+    QStackedWidget * pagesWidget;
 };
 
 #endif // CONFIGDIALOG_H

@@ -24,12 +24,22 @@ Canvas::Canvas(QGraphicsView * parent) :
     setMouseTracking(true);
     _direction = None;
     _normalize = NormalizeNone;
+
+    //connect(new ConfigurationPage, SIGNAL(deleteItem()), this, SLOT(removeCurrentItem()));
 }
 
 Canvas::~Canvas()
 {
     delete currentScene;
     currentScene = nullptr;
+}
+
+void Canvas::removeCurrentItem()
+{
+    currentScene->shapes.removeAt(currentScene->shapes.indexOf(currentShape()));
+    delete currentShape();
+    currentScene->edge()->hide();
+    currentScene->update();
 }
 
 void Canvas::hideNames()
