@@ -24,7 +24,9 @@ SOURCES += main.cpp\
     shapes/rectangle.cpp \
     shapes/edgerectangle.cpp \
     shapes/ellipse.cpp \
-    shapes/triangle.cpp
+    shapes/triangle.cpp \
+    configdialog.cpp \
+    pages.cpp
 
 HEADERS  += mainwindow.h \
     scene.h \
@@ -35,7 +37,9 @@ HEADERS  += mainwindow.h \
     shapes/rectangle.h \
     shapes/edgerectangle.h \
     shapes/ellipse.h \
-    shapes/triangle.h
+    shapes/triangle.h \
+    configdialog.h \
+    pages.h
 
 FORMS    += mainwindow.ui
 

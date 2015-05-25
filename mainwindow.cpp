@@ -32,11 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->bFill, SIGNAL(released()), this, SLOT(buttonFill()));
     connect(ui->rShowName, SIGNAL(clicked(bool)), this, SLOT(showNames()));
     connect(ui->rHideName, SIGNAL(clicked(bool)), this, SLOT(hideNames()));
-    connect(ui->listWidget, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
-
-    connect(ui->listWidget, SIGNAL(addItem(QString)), this, SLOT(addedItem(QString)));
-    connect(ui->listWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(deleteItem(QModelIndex)));
-
+    connect(ui->listWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(itemDoubleClicked(QModelIndex)));
+    connect(ui->listWidget, SIGNAL(activated(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
 
 }
 
@@ -78,28 +75,28 @@ AbstractShape * MainWindow::lastDrawnShape() const
     case Line:
     {
         LineSegment * tmp = new LineSegment;
-        ui->listWidget->addItem(tmp->getName());
+        //ui->listWidget->addItem(tmp->getName());
         return tmp;
         break;
     }
     case RectangleType:
     {
         Rectangle * tmp = new Rectangle;
-        ui->listWidget->addItem(tmp->getName());
+        //ui->listWidget->addItem(tmp->getName());
         return tmp;
         break;
     }
     case EllipseType:
     {
         Ellipse * tmp = new Ellipse;
-        ui->listWidget->addItem(tmp->getName());
+        //ui->listWidget->addItem(tmp->getName());
         return tmp;
         break;
     }
     case TriangleType:
     {
         Triangle * tmp = new Triangle;
-        ui->listWidget->addItem(tmp->getName());
+        //ui->listWidget->addItem(tmp->getName());
         return tmp;
     }
     default:
@@ -149,6 +146,7 @@ void MainWindow::newImage()
         canvas->setSceneRect(0, 0, 250, 250); // set const
     }
     canvas->setBackgroundBrush(QBrush(QColor(255, 255, 255)));
+    connect((Canvas*)ui->tabWidget->currentWidget(), SIGNAL(addName(QString)), this, SLOT(addedItem(QString)));
 }
 
 void MainWindow::buttonLineAction()
@@ -247,9 +245,11 @@ void MainWindow::hideNames()
     ((Canvas*)ui->tabWidget->currentWidget())->hideNames();
 }
 
-void MainWindow::itemClicked(QModelIndex index)
+void MainWindow::itemDoubleClicked(QModelIndex index)
 {
-    QMessageBox::information(this, "Hi", "Clicked " + index.data().toString());
+    //QMessageBox::information(this, "Hi", "Clicked " + index.data().toString());
+    ConfigDialog * dialog = new ConfigDialog;
+    dialog->show();
 }
 
 void MainWindow::addedItem(QString name)
@@ -259,5 +259,21 @@ void MainWindow::addedItem(QString name)
 
 void MainWindow::deleteItem(QModelIndex index)
 {
-    ui->listWidget->removeItemWidget(ui->listWidget->itemFromIndex(index));
+    ui->listWidget->removeItemWidget(ui->listWidget->item(index.row()));
+}
+
+void MainWindow::closeTab(int tabindex)
+{
+    ui->tabWidget->removeTab(tabindex);
+}
+
+void MainWindow::closeTab()
+{
+    closeTab(ui->tabWidget->currentIndex());
+}
+
+void MainWindow::itemClicked(QModelIndex index)
+{
+    QString name = index.data().toString();
+    ((Canvas*)ui->tabWidget->currentWidget())->makeCurrentByName(name);
 }

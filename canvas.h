@@ -56,6 +56,12 @@ public:
     void showNames();
     void hideNames();
 
+    void makeCurrentByName(QString name);
+
+
+signals:
+    void addName(QString);
+
 private:
     ResizeDirection _direction;
     NormalizeDirection _normalize;
@@ -90,9 +96,6 @@ private:
     QList<int> linePointIndexes;
 
     void notifyObservers();
-
-signals:
-    void addItem(QString);
 
 protected:
     void mousePressEvent(QMouseEvent * event);

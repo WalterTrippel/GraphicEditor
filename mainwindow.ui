@@ -82,6 +82,8 @@
     </property>
     <addaction name="actionShowDrawingTools"/>
     <addaction name="actionHideDrawingTools"/>
+    <addaction name="actionShow_List_View"/>
+    <addaction name="action_Hide_List_View"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>

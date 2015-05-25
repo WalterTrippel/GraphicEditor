@@ -17,6 +17,7 @@
 #include <QFileDialog>
 #include "canvas.h"
 #include "canvasobserver.h"
+#include  <configdialog.h>
 
 #include "shapes/linesegment.h"
 #include "shapes/rectangle.h"
@@ -62,12 +63,14 @@ private slots:
     void showNames();
     void hideNames();
 
-    void itemClicked(QModelIndex index);
+    void itemDoubleClicked(QModelIndex index);
     void addedItem(QString name);
     void deleteItem(QModelIndex index);
 
-    //void closeTab();
-    //void closeTab(int tabIndex);
+    void closeTab();
+    void closeTab(int tabIndex);
+
+    void itemClicked(QModelIndex index);
 };
 
 #endif // MAINWINDOW_H

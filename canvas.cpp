@@ -93,7 +93,7 @@ void Canvas::addShape(AbstractShape *shape)
         undrawnShape = nullptr;
     }
 
-    emit addItem(shape->getName());
+    emit addName(shape->getName());
 
     if(shape->type() == LineSegment::LineSegmentType::Type)
     {
@@ -147,6 +147,33 @@ void Canvas::setSceneRect(qreal x, qreal y, qreal w, qreal h)
     group->addToGroup(rect);
 
     currentScene->addItem(group);
+}
+
+void Canvas::makeCurrentByName(QString name)
+{
+    AbstractShape * tmp;
+    for(auto & i : currentScene->shapes)
+    {
+        if(i->getName() == name)
+        {
+            tmp = i;
+            break;
+        }
+    }
+    if(tmp != currentScene->items().first())
+    {
+        currentScene->removeItem(tmp);
+        currentScene->addItem(tmp);
+
+        AbstractShape * item = currentShape();
+        currentScene->edge()->setPen(currentPen);
+        QRectF tmp = item->boundingRect();
+        currentScene->edge()->draw(tmp.topLeft().x(), tmp.topLeft().y(),
+                                   tmp.bottomRight().x(), tmp.bottomRight().y());
+        currentScene->edge()->show();
+        currentScene->update();
+        edgeLocker = false;
+    }
 }
 
 AbstractShape * Canvas::currentShape()
