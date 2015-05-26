@@ -25,7 +25,6 @@ Canvas::Canvas(QGraphicsView * parent) :
     _direction = None;
     _normalize = NormalizeNone;
 
-    //connect(new ConfigurationPage, SIGNAL(deleteItem()), this, SLOT(removeCurrentItem()));
 }
 
 Canvas::~Canvas()
@@ -34,10 +33,25 @@ Canvas::~Canvas()
     currentScene = nullptr;
 }
 
+void Canvas::updateScene()
+{
+    currentScene->update();
+}
+
 void Canvas::removeCurrentItem()
 {
     currentScene->shapes.removeAt(currentScene->shapes.indexOf(currentShape()));
     delete currentShape();
+    currentScene->edge()->hide();
+    currentScene->update();
+}
+
+void Canvas::deleteAllItemsOnPage()
+{
+    for(auto & i : currentScene->shapes)
+    {
+        delete i;
+    }
     currentScene->edge()->hide();
     currentScene->update();
 }
@@ -103,8 +117,6 @@ void Canvas::addShape(AbstractShape *shape)
         undrawnShape = nullptr;
     }
 
-    emit addName(shape->getName());
-
     if(shape->type() == LineSegment::LineSegmentType::Type)
     {
         currentScene->lines.append((LineSegment *)shape);
@@ -112,6 +124,7 @@ void Canvas::addShape(AbstractShape *shape)
     else
     {
         currentScene->shapes.append(shape);
+        emit addName(shape->getName());
     }
 
     currentScene->addItem(shape);
@@ -991,7 +1004,9 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
         }
         else if((event->buttons() & Qt::LeftButton) && isMoved
                 && currentScene->currentShape()->type()
-                != LineSegment::LineSegmentType::Type)
+                != LineSegment::LineSegmentType::Type
+                && (!currentScene->shapes.isEmpty()
+                || !currentScene->lines.isEmpty()))
         {
             QRectF r = currentShape()->boundingRect();
             QPoint tmp = QPoint(event->pos().x() -
@@ -1049,7 +1064,8 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
 void Canvas::mouseReleaseEvent(QMouseEvent *)
 {
 
-    if(currentShape()->type() != LineSegment::LineSegmentType::Type)
+    if(currentShape()->type() != LineSegment::LineSegmentType::Type
+            && !currentScene->shapes.isEmpty())
     {
         AbstractShape * item = currentShape();
         currentScene->edge()->setPen(currentPen);

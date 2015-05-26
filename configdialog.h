@@ -12,10 +12,12 @@ public:
     ConfigDialog();
 signals:
     void sendItemDeleted();
+    void sendItemUpdated(QBrush);
 
 public slots:
     void changePage(QListWidgetItem *current, QListWidgetItem *previous);
     void receiveItemDeletion();
+    void receiveItemUpdate(QBrush);
 
 private:
     void createIcons();

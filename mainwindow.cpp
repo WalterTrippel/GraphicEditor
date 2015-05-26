@@ -34,7 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->rHideName, SIGNAL(clicked(bool)), this, SLOT(hideNames()));
     connect(ui->listWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(itemDoubleClicked(QModelIndex)));
     connect(ui->listWidget, SIGNAL(activated(QModelIndex)), this, SLOT(itemClicked(QModelIndex)));
-
+    connect(ui->actionShow_List_View, SIGNAL(triggered(bool)), this, SLOT(showTableList()));
+    connect(ui->action_Hide_List_View, SIGNAL(triggered(bool)), this, SLOT(hideTableList()));
 }
 
 MainWindow::~MainWindow()
@@ -75,28 +76,24 @@ AbstractShape * MainWindow::lastDrawnShape() const
     case Line:
     {
         LineSegment * tmp = new LineSegment;
-        //ui->listWidget->addItem(tmp->getName());
         return tmp;
         break;
     }
     case RectangleType:
     {
         Rectangle * tmp = new Rectangle;
-        //ui->listWidget->addItem(tmp->getName());
         return tmp;
         break;
     }
     case EllipseType:
     {
         Ellipse * tmp = new Ellipse;
-        //ui->listWidget->addItem(tmp->getName());
         return tmp;
         break;
     }
     case TriangleType:
     {
         Triangle * tmp = new Triangle;
-        //ui->listWidget->addItem(tmp->getName());
         return tmp;
     }
     default:
@@ -143,9 +140,10 @@ void MainWindow::newImage()
     }
     else
     {
-        canvas->setSceneRect(0, 0, 250, 250); // set const
+        canvas->setSceneRect(0, 0, 250, 250);
     }
     canvas->setBackgroundBrush(QBrush(QColor(255, 255, 255)));
+    //canvas->addShape(new LineSegment);
     connect((Canvas*)ui->tabWidget->currentWidget(), SIGNAL(addName(QString)), this, SLOT(addedItem(QString)));
 }
 
@@ -252,6 +250,7 @@ void MainWindow::itemDoubleClicked(QModelIndex index)
     dialog->show();
 
     connect(dialog, SIGNAL(sendItemDeleted()), this, SLOT(receiveItemDeleted()));
+    connect(dialog, SIGNAL(sendItemUpdated(QBrush)), this, SLOT(receiveItemUpdated(QBrush)));
 }
 
 void MainWindow::addedItem(QString name)
@@ -266,7 +265,9 @@ void MainWindow::deleteItem(QModelIndex index)
 
 void MainWindow::closeTab(int tabindex)
 {
+    ui->listWidget->clear();
     ui->tabWidget->removeTab(tabindex);
+    //((Canvas *)ui->tabWidget->currentWidget())->deleteAllItemsOnPage();
 }
 
 void MainWindow::closeTab()
@@ -284,4 +285,24 @@ void MainWindow::receiveItemDeleted()
 {
     delete ui->listWidget->currentItem();
     ((Canvas*)ui->tabWidget->currentWidget())->removeCurrentItem();
+}
+
+void MainWindow::receiveItemUpdated(QBrush brush)
+{
+    ((Canvas *)ui->tabWidget->currentWidget())->currentShape()->setBrush(brush);
+    ((Canvas *)ui->tabWidget->currentWidget())->updateScene();
+}
+
+void MainWindow::showTableList()
+{
+    ui->actionShow_List_View->setChecked(true);
+    ui->action_Hide_List_View->setChecked(false);
+    ui->dockWidget->show();
+}
+
+void MainWindow::hideTableList()
+{
+    ui->actionShow_List_View->setChecked(false);
+    ui->action_Hide_List_View->setChecked(true);
+    ui->dockWidget->hide();
 }

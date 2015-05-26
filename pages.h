@@ -13,6 +13,7 @@
 #include <QDate>
 #include <QDateTimeEdit>
 #include <QSpinBox>
+#include <QColorDialog>
 
 class ConfigurationPage : public QWidget
 {
@@ -27,8 +28,13 @@ public slots:
 
 class UpdatePage : public QWidget
 {
+    Q_OBJECT
 public:
     UpdatePage(QWidget *parent = 0);
+signals:
+    void updateShape(QBrush);
+public slots:
+    void shapeUpdated();
 };
 
 #endif // PAGES

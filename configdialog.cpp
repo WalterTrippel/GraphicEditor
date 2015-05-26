@@ -15,7 +15,8 @@ ConfigDialog::ConfigDialog()
     //signal slot diagramm
     ConfigurationPage * cp = new ConfigurationPage;
     pagesWidget->addWidget(cp);
-    pagesWidget->addWidget(new UpdatePage);
+    UpdatePage * up = new UpdatePage;
+    pagesWidget->addWidget(up);
 
     QPushButton * closeButton = new QPushButton(tr("Close"));
 
@@ -41,6 +42,12 @@ ConfigDialog::ConfigDialog()
 
     setWindowTitle(tr("Config Dialog"));
     connect(cp, SIGNAL(deleteItem()), this, SLOT(receiveItemDeletion()));
+    connect(up, SIGNAL(updateShape(QBrush)), this, SLOT(receiveItemUpdate(QBrush)));
+}
+
+void ConfigDialog::receiveItemUpdate(QBrush brush)
+{
+    emit sendItemUpdated(brush);
 }
 
 void ConfigDialog::receiveItemDeletion()

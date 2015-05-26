@@ -80,7 +80,12 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <addaction name="actionShowDrawingTools"/>
+    <widget class="QMenu" name="menu_Show_Drawing_Tools">
+     <property name="title">
+      <string>&amp;Show Drawing Tools</string>
+     </property>
+    </widget>
+    <addaction name="menu_Show_Drawing_Tools"/>
     <addaction name="actionHideDrawingTools"/>
     <addaction name="actionShow_List_View"/>
     <addaction name="action_Hide_List_View"/>
@@ -226,7 +231,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWidget">
+  <widget class="QDockWidget" name="listDock">
    <attribute name="dockWidgetArea">
     <number>2</number>
    </attribute>
@@ -273,11 +278,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
-   </property>
-  </action>
-  <action name="actionShowDrawingTools">
-   <property name="text">
-    <string>&amp;Show Drawing Tools</string>
    </property>
   </action>
   <action name="actionHideDrawingTools">

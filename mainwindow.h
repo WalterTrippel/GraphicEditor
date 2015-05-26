@@ -74,6 +74,9 @@ private slots:
 
     void itemClicked(QModelIndex index);
     void receiveItemDeleted();
+    void receiveItemUpdated(QBrush);
+    void showTableList();
+    void hideTableList();
 };
 
 #endif // MAINWINDOW_H

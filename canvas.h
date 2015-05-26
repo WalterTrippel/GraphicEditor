@@ -54,11 +54,13 @@ public:
     bool sceneLocker(QPointF point);
     void removeCurrentEdge();
     void removeCurrentItem();
+    void updateScene();
 
     void showNames();
     void hideNames();
 
     void makeCurrentByName(QString name);
+    void deleteAllItemsOnPage();
 
 signals:
     void addName(QString);
