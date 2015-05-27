@@ -24,6 +24,7 @@
 #include "shapes/ellipse.h"
 #include "shapes/triangle.h"
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -77,6 +78,9 @@ private slots:
     void receiveItemUpdated(QBrush);
     void showTableList();
     void hideTableList();
+
+    void save();
+    void open();
 };
 
 #endif // MAINWINDOW_H

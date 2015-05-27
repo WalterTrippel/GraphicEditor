@@ -10,7 +10,11 @@ INPUT(
 ./release/edgerectangle.o
 ./release/ellipse.o
 ./release/triangle.o
+./release/configdialog.o
+./release/pages.o
 ./release/testtask_plugin_import.o
 ./release/moc_mainwindow.o
 ./release/moc_canvas.o
+./release/moc_configdialog.o
+./release/moc_pages.o
 );

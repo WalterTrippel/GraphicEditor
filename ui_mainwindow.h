@@ -39,7 +39,6 @@ public:
     QAction *actionOpen;
     QAction *actionSave;
     QAction *actionExit;
-    QAction *actionShowDrawingTools;
     QAction *actionHideDrawingTools;
     QAction *actionCloseTab;
     QAction *actionShow_List_View;
@@ -53,6 +52,7 @@ public:
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuView;
+    QMenu *menu_Show_Drawing_Tools;
     QStatusBar *statusBar;
     QDockWidget *drawingTools;
     QWidget *dockWidgetContents_2;
@@ -85,8 +85,6 @@ public:
         actionSave->setObjectName(QStringLiteral("actionSave"));
         actionExit = new QAction(MainWindow);
         actionExit->setObjectName(QStringLiteral("actionExit"));
-        actionShowDrawingTools = new QAction(MainWindow);
-        actionShowDrawingTools->setObjectName(QStringLiteral("actionShowDrawingTools"));
         actionHideDrawingTools = new QAction(MainWindow);
         actionHideDrawingTools->setObjectName(QStringLiteral("actionHideDrawingTools"));
         actionCloseTab = new QAction(MainWindow);
@@ -131,6 +129,8 @@ public:
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuView = new QMenu(menuBar);
         menuView->setObjectName(QStringLiteral("menuView"));
+        menu_Show_Drawing_Tools = new QMenu(menuView);
+        menu_Show_Drawing_Tools->setObjectName(QStringLiteral("menu_Show_Drawing_Tools"));
         MainWindow->setMenuBar(menuBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
@@ -227,15 +227,13 @@ public:
         menuFile->addSeparator();
         menuFile->addAction(actionCloseTab);
         menuFile->addAction(actionExit);
-        menuView->addAction(actionShowDrawingTools);
+        menuView->addAction(menu_Show_Drawing_Tools->menuAction());
         menuView->addAction(actionHideDrawingTools);
         menuView->addAction(actionShow_List_View);
         menuView->addAction(action_Hide_List_View);
 
         retranslateUi(MainWindow);
-        QObject::connect(actionShowDrawingTools, SIGNAL(triggered()), drawingTools, SLOT(show()));
         QObject::connect(actionHideDrawingTools, SIGNAL(triggered()), drawingTools, SLOT(hide()));
-        QObject::connect(drawingTools, SIGNAL(visibilityChanged(bool)), actionShowDrawingTools, SLOT(setDisabled(bool)));
         QObject::connect(drawingTools, SIGNAL(visibilityChanged(bool)), actionHideDrawingTools, SLOT(setEnabled(bool)));
         QObject::connect(actionNew, SIGNAL(triggered()), MainWindow, SLOT(newImage()));
         QObject::connect(actionOpen, SIGNAL(triggered()), MainWindow, SLOT(open()));
@@ -261,16 +259,16 @@ public:
         actionSave->setShortcut(QApplication::translate("MainWindow", "Ctrl+S", 0));
         actionExit->setText(QApplication::translate("MainWindow", "&Exit", 0));
         actionExit->setShortcut(QApplication::translate("MainWindow", "Ctrl+Q", 0));
-        actionShowDrawingTools->setText(QApplication::translate("MainWindow", "&Show Drawing Tools", 0));
         actionHideDrawingTools->setText(QApplication::translate("MainWindow", "&Hide Drawing Tools", 0));
         actionCloseTab->setText(QApplication::translate("MainWindow", "&Close Tab", 0));
         actionCloseTab->setShortcut(QApplication::translate("MainWindow", "Ctrl+W", 0));
-        actionShow_List_View->setText(QApplication::translate("MainWindow", "&Show List View", 0));
-        action_Hide_List_View->setText(QApplication::translate("MainWindow", "&Hide List View", 0));
+        actionShow_List_View->setText(QApplication::translate("MainWindow", "Show &List View", 0));
+        action_Hide_List_View->setText(QApplication::translate("MainWindow", "Hide List &View", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "New", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Tab 2", 0));
         menuFile->setTitle(QApplication::translate("MainWindow", "Fi&le", 0));
         menuView->setTitle(QApplication::translate("MainWindow", "&View", 0));
+        menu_Show_Drawing_Tools->setTitle(QApplication::translate("MainWindow", "&Show Drawing Tools", 0));
 #ifndef QT_NO_TOOLTIP
         drawingTools->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p>Drawing Tools</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP

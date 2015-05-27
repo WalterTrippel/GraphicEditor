@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-Rectangle::Rectangle(const QPen & pen, const QBrush & brush,
+RectangleShape::RectangleShape(const QPen & pen, const QBrush & brush,
                      AbstractShape * parent): AbstractShape(pen, brush, parent),
                                               self(new QGraphicsRectItem),
                                               edge(new EdgeRectangle)
@@ -11,7 +11,7 @@ Rectangle::Rectangle(const QPen & pen, const QBrush & brush,
     name = getName();
 }
 
-Rectangle::~Rectangle()
+RectangleShape::~RectangleShape()
 {
     delete self;
     self = nullptr;
@@ -20,17 +20,17 @@ Rectangle::~Rectangle()
     edge = nullptr;
 }
 
-int Rectangle::type() const
+int RectangleShape::type() const
 {
     return RectangleType::Type;
 }
 
-QGraphicsItem * Rectangle::currentEdge() const
+QGraphicsItem * RectangleShape::currentEdge() const
 {
     return this->edge;
 }
 
-QRectF Rectangle::boundingRect() const
+QRectF RectangleShape::boundingRect() const
 {
     #define angle rotation()
 
@@ -61,7 +61,7 @@ QRectF Rectangle::boundingRect() const
     return tmp;
 }
 
-void Rectangle::draw(qreal x1, qreal y1, qreal x2, qreal y2)
+void RectangleShape::draw(qreal x1, qreal y1, qreal x2, qreal y2)
 {
     self->setPen(pen());
     self->setBrush(brush());
@@ -69,7 +69,7 @@ void Rectangle::draw(qreal x1, qreal y1, qreal x2, qreal y2)
     self->setRect(x1, y1, x2 - x1, y2 - y1);
 }
 
-void Rectangle::normalize(qreal x1, qreal y1, qreal width)
+void RectangleShape::normalize(qreal x1, qreal y1, qreal width)
 {
     self->setPen(pen());
     self->setBrush(brush());
@@ -77,7 +77,7 @@ void Rectangle::normalize(qreal x1, qreal y1, qreal width)
     self->setRect(x1, y1, width, width);
 }
 
-void Rectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void RectangleShape::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     QRectF tmp = boundingRect();
     painter->setPen(Qt::black);
@@ -87,7 +87,7 @@ void Rectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     self->paint(painter, option, widget);
 }
 
-QString Rectangle::getName() const
+QString RectangleShape::getName() const
 {
     return QString("Rectangle_").append(std::to_string(_id).c_str());
 }

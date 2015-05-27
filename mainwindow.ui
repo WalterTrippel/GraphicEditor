@@ -231,7 +231,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="listDock">
+  <widget class="QDockWidget" name="dockWidget">
    <attribute name="dockWidgetArea">
     <number>2</number>
    </attribute>
@@ -295,34 +295,18 @@
   </action>
   <action name="actionShow_List_View">
    <property name="text">
-    <string>&amp;Show List View</string>
+    <string>Show &amp;List View</string>
    </property>
   </action>
   <action name="action_Hide_List_View">
    <property name="text">
-    <string>&amp;Hide List View</string>
+    <string>Hide List &amp;View</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections>
-  <connection>
-   <sender>actionShowDrawingTools</sender>
-   <signal>triggered()</signal>
-   <receiver>drawingTools</receiver>
-   <slot>show()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>52</x>
-     <y>151</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>actionHideDrawingTools</sender>
    <signal>triggered()</signal>
@@ -336,22 +320,6 @@
     <hint type="destinationlabel">
      <x>52</x>
      <y>151</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>drawingTools</sender>
-   <signal>visibilityChanged(bool)</signal>
-   <receiver>actionShowDrawingTools</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>52</x>
-     <y>151</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
     </hint>
    </hints>
   </connection>

@@ -5,16 +5,16 @@
 #include "../abstractshape.h"
 #include "edgerectangle.h"
 
-class Ellipse : public AbstractShape
+class EllipseShape : public AbstractShape
 {
     long _id;
     QGraphicsEllipseItem * self;
     EdgeRectangle * edge;
 public:
     enum EllipseType {Type = AbstractType::Type + 3};
-    explicit Ellipse(const QPen &pen = QPen(), const QBrush & brush = QBrush(),
+    explicit EllipseShape(const QPen &pen = QPen(), const QBrush & brush = QBrush(),
                      AbstractShape * parent = nullptr);
-    virtual ~Ellipse();
+    virtual ~EllipseShape();
     int type() const;
     virtual QRectF boundingRect() const;
     virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,

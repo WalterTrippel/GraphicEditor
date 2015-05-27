@@ -62,6 +62,8 @@ public:
     void makeCurrentByName(QString name);
     void deleteAllItemsOnPage();
 
+    Scene * getCurrentScene() const;
+
 signals:
     void addName(QString);
 

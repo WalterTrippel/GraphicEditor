@@ -1,8 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QDebug>
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -81,20 +79,18 @@ AbstractShape * MainWindow::lastDrawnShape() const
     }
     case RectangleType:
     {
-        Rectangle * tmp = new Rectangle;
-        return tmp;
+        return new RectangleShape;
         break;
     }
     case EllipseType:
     {
-        Ellipse * tmp = new Ellipse;
-        return tmp;
+        return new EllipseShape;
         break;
     }
     case TriangleType:
     {
-        Triangle * tmp = new Triangle;
-        return tmp;
+        return new Triangle;
+        break;
     }
     default:
     {
@@ -233,14 +229,18 @@ void MainWindow::showNames()
 {
     ui->rHideName->setChecked(false);
 
-    ((Canvas*)ui->tabWidget->currentWidget())->showNames();
+    Canvas * tmp = (Canvas*)ui->tabWidget->currentWidget();
+    if(tmp)
+        ((Canvas*)ui->tabWidget->currentWidget())->showNames();
 }
 
 void MainWindow::hideNames()
 {
     ui->rShowName->setChecked(false);
 
-    ((Canvas*)ui->tabWidget->currentWidget())->hideNames();
+    Canvas * tmp = (Canvas*)ui->tabWidget->currentWidget();
+    if(tmp)
+        ((Canvas*)ui->tabWidget->currentWidget())->hideNames();
 }
 
 void MainWindow::itemDoubleClicked(QModelIndex index)
@@ -298,6 +298,164 @@ void MainWindow::showTableList()
     ui->actionShow_List_View->setChecked(true);
     ui->action_Hide_List_View->setChecked(false);
     ui->dockWidget->show();
+}
+
+void MainWindow::save()
+{
+    QString currentDirSave = "";
+    if((Canvas *)ui->tabWidget->currentWidget())
+    {
+        QRect currentRect = ((Canvas*)ui->tabWidget->currentWidget())->viewport()->rect();
+        ((Canvas*)ui->tabWidget->currentWidget())->adjustSize();
+
+        QRect rect = ((Canvas*)ui->tabWidget->currentWidget())->drawRect().toRect();
+
+        QPixmap pixmap(rect.width(), rect.height());
+
+        QPainter painter(&pixmap);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+        ((Canvas*)ui->tabWidget->currentWidget())->render(&painter, rect, rect);
+        painter.end();
+
+        ((Canvas*)ui->tabWidget->currentWidget())->resize(currentRect.width(), currentRect.height());
+
+        QString selfilter = tr("JPEG (*.jpg *.jpeg)");
+        QString fileName = QFileDialog::getSaveFileName(
+                this,
+                tr("Save Dialog"),
+                currentDirSave,
+                tr("All files (*.*);;JPEG (*.jpg *.jpeg);;PNG (*.png);;XML (*.xml)" ),
+                &selfilter
+        );
+
+        if(!fileName.isEmpty())
+        {
+            if(selfilter == "JPEG (*.jpg *.jpeg)" || selfilter == "PNG (*.png)")
+            {
+                if(selfilter == "JPEG (*.jpg *.jpeg)")
+                {
+                    fileName += ".jpg";
+                }
+                else
+                {
+                    fileName += ".png";
+                }
+                QStringList list = fileName.split("/");
+                for(int i = 0; i < list.size() - 1; ++i)
+                {
+                    currentDirSave += list.at(i) + "/";
+                }
+
+                QStringList listFormat = fileName.split(".");
+                const char * format = listFormat.at(listFormat.size() - 1).toStdString().c_str();
+
+                pixmap.save(fileName, format);
+                ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), list.at(list.size() - 1));
+            }
+            else if(selfilter == "XML (*.xml)")
+            {
+                fileName += ".xml";
+                QFile _file(fileName);
+                _file.open(QIODevice::WriteOnly | QIODevice::Text);
+                QXmlStreamWriter writer(&_file);
+
+                writer.setAutoFormatting(true);
+                writer.writeStartDocument("1.0");
+                writer.writeComment("I am a good old rebel");
+
+                Canvas * current = (Canvas *)ui->tabWidget->currentWidget();
+                Scene * tmpScene = current->getCurrentScene();
+                if(tmpScene)
+                {
+                    writer.writeStartElement("scene");
+                    writer.writeStartElement("rect");
+                    writer.writeStartElement("topLeft");
+                    writer.writeAttribute("x",
+                            QString::number(currentRect.topLeft().x()));
+                    writer.writeAttribute("y",
+                            QString::number(currentRect.topLeft().y()));
+                    writer.writeEndElement();
+                    writer.writeStartElement("bottomRight");
+                    writer.writeAttribute("x",
+                            QString::number(currentRect.bottomRight().x()));
+                    writer.writeAttribute("y",
+                            QString::number(currentRect.bottomRight().y()));
+                    writer.writeEndElement();
+                    writer.writeEndElement();
+                    writer.writeEndElement();
+
+                    for(auto &i : tmpScene->shapes)
+                    {
+                        writer.writeStartElement("shape");
+                        writer.writeStartElement("rect");
+                        writer.writeStartElement("topLeft");
+                        writer.writeAttribute("x",
+                                QString::number(i->boundingRect().topLeft().x()));
+                        writer.writeAttribute("y",
+                                QString::number(i->boundingRect().topLeft().y()));
+                        writer.writeEndElement();
+                        writer.writeStartElement("bottomRight");
+                        writer.writeAttribute("x",
+                                QString::number(i->boundingRect().bottomRight().x()));
+                        writer.writeAttribute("y",
+                                QString::number(i->boundingRect().bottomRight().y()));
+                        writer.writeEndElement();
+                        writer.writeEndElement();
+                        writer.writeStartElement("brush");
+                        writer.writeAttribute("color",
+                                QString::number(i->brush().color().value()));
+                        writer.writeEndElement();
+                        writer.writeStartElement("pen");
+                        writer.writeAttribute("color", QString::number(i->pen().color().value()));
+                        writer.writeAttribute("width", QString::number(i->pen().width()));
+                        writer.writeEndElement();
+                        writer.writeTextElement("ShapeType", QString::number(i->type()));
+                        writer.writeEndElement();
+                        writer.writeEndDocument();
+                    }
+
+                    for(auto &i : tmpScene->lines)
+                    {
+                        writer.writeStartElement("shape");
+                        writer.writeStartElement("rect");
+                        writer.writeStartElement("topLeft");
+                        writer.writeAttribute("x",
+                                QString::number(i->boundingRect().topLeft().x()));
+                        writer.writeAttribute("y",
+                                QString::number(i->boundingRect().topLeft().y()));
+                        writer.writeEndElement();
+                        writer.writeStartElement("bottomRight");
+                        writer.writeAttribute("x",
+                                QString::number(i->boundingRect().bottomRight().x()));
+                        writer.writeAttribute("y",
+                                QString::number(i->boundingRect().bottomRight().y()));
+                        writer.writeEndElement();
+                        writer.writeEndElement();
+                        writer.writeStartElement("brush");
+                        writer.writeAttribute("color",
+                                QString::number(i->brush().color().value()));
+                        writer.writeEndElement();
+                        writer.writeStartElement("pen");
+                        writer.writeAttribute("color", QString::number(i->pen().color().value()));
+                        writer.writeAttribute("width", QString::number(i->pen().width()));
+                        writer.writeEndElement();
+                        writer.writeTextElement("ShapeType", QString::number(i->type()));
+                        writer.writeEndElement();
+                        writer.writeEndDocument();
+                    }
+                }
+            }
+        }
+    }
+}
+
+void MainWindow::open()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Dialog"), currentDirOpen, tr("Files (*.xml)"));
+    if(!fileName.isEmpty())
+    {
+
+    }
 }
 
 void MainWindow::hideTableList()

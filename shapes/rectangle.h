@@ -6,16 +6,16 @@
 #include "edgerectangle.h"
 
 
-class Rectangle : public AbstractShape
+class RectangleShape : public AbstractShape
 {
     long _id;
     QGraphicsRectItem * self;
     EdgeRectangle * edge;
 public:
     enum RectangleType {Type = AbstractType::Type + 2};
-    explicit Rectangle(const QPen & pen = QPen(), const QBrush & brush = QBrush(),
+    explicit RectangleShape(const QPen & pen = QPen(), const QBrush & brush = QBrush(),
                        AbstractShape * parent = nullptr);
-    virtual ~Rectangle();
+    virtual ~RectangleShape();
     int type() const;
     QRectF boundingRect() const;
     virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,

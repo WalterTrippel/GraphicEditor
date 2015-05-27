@@ -35,21 +35,16 @@ UpdatePage::UpdatePage(QWidget *parent)
 {
     QGroupBox * updateGroup = new QGroupBox(tr("Shape modifiction"));
     QPushButton * changeBrushFill = new QPushButton(tr("Fill shape"));
-    QCheckBox * appsCheckBox = new QCheckBox(tr("Update applications"));
-    QCheckBox * docsCheckBox = new QCheckBox(tr("Update documentation"));
 
-    QPushButton *startUpdateButton = new QPushButton(tr("Start update"));
+    //QPushButton * startUpdateButton = new QPushButton(tr("Start update"));
 
     QVBoxLayout *updateLayout = new QVBoxLayout;
     updateLayout->addWidget(changeBrushFill);
-    updateLayout->addWidget(appsCheckBox);
-    updateLayout->addWidget(docsCheckBox);
     updateGroup->setLayout(updateLayout);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(updateGroup);
     mainLayout->addSpacing(12);
-    mainLayout->addWidget(startUpdateButton);
     mainLayout->addStretch(1);
     setLayout(mainLayout);
 

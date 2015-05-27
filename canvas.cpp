@@ -35,7 +35,14 @@ Canvas::~Canvas()
 
 void Canvas::updateScene()
 {
+    currentShape()->setPen(currentPen);
+    currentShape()->draw(startX(), startY(), endX(), endY());
     currentScene->update();
+}
+
+Scene * Canvas::getCurrentScene() const
+{
+    return currentScene;
 }
 
 void Canvas::removeCurrentItem()
